@@ -1,0 +1,45 @@
+console-reports:
+  active: true
+  exclude:
+  #  - 'ProjectStatisticsReport'
+  #  - 'ComplexityReport'
+     - 'NotificationReport'
+  #  - 'FindingsReport'
+     - 'FileBasedFindingsReport'
+
+output-reports:
+  active: true
+  exclude:
+  # - 'TxtOutputReport'
+   - 'XmlOutputReport'
+#   - 'HtmlOutputReport'
+
+complexity:
+  active: true
+  ComplexMethod:
+    active: true
+    threshold: 3   # Was 15 - reduce by 80%
+  LargeClass:
+    active: true
+    threshold: 120   # Was 600 - reduce by 80%
+  LongMethod:
+    active: true
+    threshold: 12   # Was 60 - reduce by 80%
+  ReplaceSafeCallChainWithRun:
+    active: true   # Was false
+
+naming:
+  active: true
+  MemberNameEqualsClassName:
+    active: false  # Was true (extension method uses)
+    ignoreOverridden: true
+
+potential-bugs:
+  active: true
+  WrongEqualsTypeParameter:
+    active: false  # Was true (equals overloading desired)
+
+style:
+  ReturnCount:
+    active: true
+    excludeGuardClauses: true
