@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.nrkei.training.microservices.rapid.filter.Validation
 import com.nrkei.training.microservices.rapid.packet.HeartBeat
+import com.nrkei.training.microservices.rapid.packet.LogPacket
+import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.SERVICE_NOT_RESPONDING
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
 
@@ -26,8 +28,13 @@ class River(
     }
 
     private val listeners = mutableListOf<PacketListener>()
+    private val systemListeners = mutableListOf<SystemListener>()
 
     infix fun register(listener: PacketListener) = listeners.add(listener)
+
+    infix fun register(listener: SystemListener) = systemListeners.add(listener).also {
+        listeners.add(listener)
+    }
 
     override fun message(sendPort: RapidsConnection, message: String) {
         try {
@@ -35,7 +42,7 @@ class River(
             Packet(ObjectMapper().readValue<Map<String, Any>>(message)).apply {
                 println(this)
                 when {
-                    hasInvalidReadCount(maxReadCount) -> this@River.triggerInvalidPacket(this)
+                    hasInvalidReadCount(maxReadCount) -> this@River.triggerLoopDetection(this)
                     isHeartBeat() -> this@River.triggerHeartBeat(this)
                     doesMeetRules(rules) -> this@River.triggerPacket(this)
                     else -> this@River.triggerFailingPacket(this)
@@ -43,12 +50,16 @@ class River(
                 println(this)
             }
         } catch (e: JsonParseException) {
-            println(e.message)
+            triggerInvalidPacket(message)
         }
     }
 
-    private fun triggerInvalidPacket(packet: Packet) {
+    private fun triggerInvalidPacket(message: String) {
+        systemListeners.forEach { service -> service.invalidFormat(message) }
+    }
 
+    private fun triggerLoopDetection(packet: Packet) {
+        systemListeners.forEach { service -> service.loopDetected(packet) }
     }
 
     private fun triggerHeartBeat(packet: Packet) {
@@ -56,6 +67,9 @@ class River(
             if(service.isStillAlive()) {
                 packet[HeartBeat.HEART_BEAT_RESPONDER] = service.name
                 connection.publish(packet.toJsonString())
+            }
+            else {
+                connection.publish(LogPacket.error(SERVICE_NOT_RESPONDING, service.name).toJsonString())
             }
         }
     }
@@ -71,5 +85,10 @@ class River(
     interface PacketListener {
         val name: String get() = "${this.javaClass.simpleName} [${this.hashCode()}]"
         fun isStillAlive(): Boolean = true
+    }
+
+    interface SystemListener : PacketListener {
+        fun invalidFormat(invalidString: String)
+        fun loopDetected(packet: Packet)
     }
 }

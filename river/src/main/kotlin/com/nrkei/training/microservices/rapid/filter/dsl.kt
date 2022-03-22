@@ -5,16 +5,25 @@ fun rules(block: ValidationsBuilder.() -> Unit) =
 
 class ValidationsBuilder internal constructor() {
     internal val results = mutableListOf<Validation>()
+
     val require get() = RequiredKeyBuilder()
     val forbid get() = ForbiddenKeyBuilder()
 
-
     inner class RequiredKeyBuilder() {
-        infix fun key(key: String) = this
-        infix fun value(value: String) {}
+        private lateinit var key: String
+
+        infix fun key(key: String) = this.also {
+            results.add(KeyExistanceValidation(key))
+            this.key = key
+        }
+
+        infix fun value(value: Any) {
+            results.remove(results.last())
+            results.add(KeyValueValidation(key, value))
+        }
     }
 
     inner class ForbiddenKeyBuilder() {
-        infix fun key(key: String) {}
+        infix fun key(key: String) { results.add(KeyAbsenseValidation(key)) }
     }
 }

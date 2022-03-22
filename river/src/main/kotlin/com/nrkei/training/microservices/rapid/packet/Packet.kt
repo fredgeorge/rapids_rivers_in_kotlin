@@ -13,7 +13,9 @@ class Packet internal constructor(map: Map<String, Any>) {
     companion object {
         internal const val PACKET_TYPE = "packet_type"
         internal const val SYSTEM_PACKET_TYPE = "system_packet"
+
         internal const val SYSTEM_PURPOSE = "system_purpose"
+
         internal const val READ_COUNT = "system_read_count"
     }
 

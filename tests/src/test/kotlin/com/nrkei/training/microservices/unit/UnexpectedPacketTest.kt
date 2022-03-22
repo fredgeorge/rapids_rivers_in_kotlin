@@ -6,7 +6,9 @@
 
 package com.nrkei.training.microservices.unit
 
-import com.nrkei.training.microservices.rapid.packet.HeartBeat
+import com.nrkei.training.microservices.rapid.packet.LogPacket
+import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.INVALID_JSON
+import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
 import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
 import com.nrkei.training.microservices.rapid.river.River
@@ -14,32 +16,21 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-// Ensures system heartbeat behavior works
-internal class HeartbeatTest {
+// Ensures system errors trigger reaction
+internal class UnexpectedPacketTest {
 
     @Test
-    fun `positive response`() {
+    fun `invalid JSON`() {
         TestConnection().also { rapids ->
             River(rapids).also { river ->
-                river.register(TestService(isAliveResponse = true))
-                rapids.injectMessage(HeartBeat().toJsonString())
-                assertEquals(1, rapids.sentMessages.size)
-                assertTrue("heart_beat_responder" in rapids.sentMessages.first())
-            }
-        }
-    }
-
-    @Test
-    fun `log failure if negative`() {
-        TestConnection().also { rapids ->
-            River(rapids).also { river ->
-                river.register(TestService(isAliveResponse = false))
-                rapids.injectMessage(HeartBeat().toJsonString())
+                river.register(TestSystemService(rapids))
+                rapids.injectMessage("qwerty")
                 rapids.sentMessages.also { messages ->
                     assertEquals(1, messages.size)
                     messages.first().also { message ->
                         assertTrue("log_severity" in message)
                         assertTrue("error" in message)
+                        assertTrue("log_detail" in message)
                         println(message)
                     }
                 }
@@ -62,7 +53,18 @@ internal class HeartbeatTest {
         fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
     }
 
-    private class TestService(private val isAliveResponse: Boolean) : River.PacketListener {
-        override fun isStillAlive() = isAliveResponse
+    private class TestSystemService(private val rapids: RapidsConnection) : River.SystemListener {
+        override fun isStillAlive() = true
+
+        override fun invalidFormat(invalidString: String) {
+            LogPacket.error(INVALID_JSON, name).apply {
+                details(invalidString)
+                rapids.publish(this.toJsonString())
+            }
+        }
+
+        override fun loopDetected(packet: Packet) {
+            TODO("Not yet implemented")
+        }
     }
 }
