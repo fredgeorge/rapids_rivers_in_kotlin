@@ -14,6 +14,6 @@ interface RapidsConnection {
     fun publish(message: String)
 
     interface MessageListener {
-        fun message(sendPort: RapidsConnection, message: String)
+        fun message(sendPort: RapidsConnection, message: String): Any?
     }
 }

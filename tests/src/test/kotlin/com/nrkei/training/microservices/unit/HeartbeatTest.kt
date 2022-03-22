@@ -19,24 +19,27 @@ internal class HeartbeatTest {
     @Test fun `positive default response`() {
         TestConnection().also { rapids ->
             River(rapids).also { river ->
+                river.register(TestService())
                 rapids.injectMessage(HeartBeat().toJsonString())
-                assertEquals(1, rapids.sendMessages.size)
+                assertEquals(1, rapids.sentMessages.size)
             }
         }
     }
 
     private class TestConnection : RapidsConnection {
         private val rivers = mutableListOf<MessageListener>()
-        val sendMessages = mutableListOf<String>()
+        val sentMessages = mutableListOf<String>()
 
         override fun register(listener: MessageListener) {
             rivers.add(listener)
         }
 
         override fun publish(message: String) {
-            sendMessages.add(message)
+            sentMessages.add(message)
         }
 
         fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
     }
+
+    private class TestService : River.PacketListener
 }
