@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 by Fred George
+ * May be used freely except for training; license required for training.
+ * @author Fred George  fredgeorge@acm.org
+ */
+
 package com.nrkei.training.microservices.rapid.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper

@@ -10,6 +10,7 @@ import com.nrkei.training.microservices.rapid.packet.HeartBeat
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
 import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
 import com.nrkei.training.microservices.rapid.river.River
+import com.nrkei.training.microservices.unit.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -47,20 +48,6 @@ internal class HeartbeatTest {
         }
     }
 
-    private class TestConnection : RapidsConnection {
-        private val rivers = mutableListOf<MessageListener>()
-        val sentMessages = mutableListOf<String>()
-
-        override fun register(listener: MessageListener) {
-            rivers.add(listener)
-        }
-
-        override fun publish(message: String) {
-            sentMessages.add(message)
-        }
-
-        fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
-    }
 
     private class TestService(private val isAliveResponse: Boolean) : River.PacketListener {
         override fun isStillAlive() = isAliveResponse
