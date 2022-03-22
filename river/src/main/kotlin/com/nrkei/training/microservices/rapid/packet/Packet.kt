@@ -19,15 +19,19 @@ class Packet internal constructor(map: Map<String, Any>) {
 
     private val map = map.toMutableMap()
 
-    internal fun hasInvalidReadCount(maxReadCount: Int) : Boolean =
-        map.getOrPut(READ_COUNT, {0}).let {
+    internal fun hasInvalidReadCount(maxReadCount: Int): Boolean =
+        map.getOrPut(READ_COUNT, { 0 }).let {
             map[READ_COUNT] = (it as Int) + 1
             !(maxReadCount == 0 || map[READ_COUNT] as Int <= maxReadCount)
         }
 
     internal fun isHeartBeat() = doesMeetRules(HeartBeat.validations)
 
-    internal fun doesMeetRules(rules: List<Validation>) = true
+    internal fun doesMeetRules(rules: List<Validation>) = rules
+        .map { it.isValid(this) }
+        .all { it }
+
+    operator fun get(key: String) = map[key]
 
     operator fun set(key: String, value: Any) = map.set(key, value)
 
