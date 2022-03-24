@@ -11,7 +11,7 @@ interface RapidsConnection {
 
     fun register(listener: MessageListener)
 
-    fun publish(message: String)
+    fun publish(message: RapidsPacket)
 
     interface MessageListener {
         fun message(sendPort: RapidsConnection, message: String): Any?

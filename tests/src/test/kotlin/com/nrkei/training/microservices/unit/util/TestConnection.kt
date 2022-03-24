@@ -7,6 +7,7 @@
 package com.nrkei.training.microservices.unit.util
 
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
+import com.nrkei.training.microservices.rapid.river.RapidsPacket
 
 // Simulates an event bus
 internal class TestConnection : RapidsConnection {
@@ -17,8 +18,8 @@ internal class TestConnection : RapidsConnection {
         rivers.add(listener)
     }
 
-    override fun publish(message: String) {
-        sentMessages.add(message)
+    override fun publish(message: RapidsPacket) {
+        sentMessages.add(message.toJsonString())
     }
 
     fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }

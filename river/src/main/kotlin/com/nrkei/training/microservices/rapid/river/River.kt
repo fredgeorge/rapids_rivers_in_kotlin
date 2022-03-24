@@ -66,10 +66,10 @@ class River(
         listeners.forEach { service ->
             if(service.isStillAlive()) {
                 packet[HeartBeat.HEART_BEAT_RESPONDER] = service.name
-                connection.publish(packet.toJsonString())
+                connection.publish(packet)
             }
             else {
-                connection.publish(LogPacket.error(SERVICE_NOT_RESPONDING, service.name).toJsonString())
+                connection.publish(LogPacket.error(SERVICE_NOT_RESPONDING, service.name))
             }
         }
     }

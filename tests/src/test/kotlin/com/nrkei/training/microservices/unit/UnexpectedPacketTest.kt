@@ -45,7 +45,7 @@ internal class UnexpectedPacketTest {
         override fun invalidFormat(invalidString: String) {
             LogPacket.error(INVALID_JSON, name).apply {
                 details(invalidString)
-                rapids.publish(this.toJsonString())
+                rapids.publish(this)
             }
         }
 
