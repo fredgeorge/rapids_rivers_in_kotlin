@@ -11,9 +11,10 @@ import com.nrkei.training.microservices.rapid.filter.rules
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.PACKET_TYPE
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PACKET_TYPE
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PURPOSE
+import com.nrkei.training.microservices.rapid.river.RapidsPacket
 
 // Understands a request to reaffirm operational status
-class HeartBeat {
+class HeartBeat : RapidsPacket {
     companion object {
         internal const val HEART_BEAT_PURPOSE = "heart_beat"
         internal const val HEART_BEAT_RESPONDER = "heart_beat_responder"
@@ -25,7 +26,7 @@ class HeartBeat {
         }
     }
 
-    fun toJsonString() = mutableMapOf<String, Any>()
+    override fun toJsonString() = mutableMapOf<String, Any>()
         .also { map ->
             map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
             map[SYSTEM_PURPOSE] = HEART_BEAT_PURPOSE

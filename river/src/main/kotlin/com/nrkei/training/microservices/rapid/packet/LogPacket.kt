@@ -10,9 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.PACKET_TYPE
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PACKET_TYPE
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PURPOSE
+import com.nrkei.training.microservices.rapid.river.RapidsPacket
 
 // Understands something interesting that occurred
-class LogPacket private constructor(){
+class LogPacket private constructor() : RapidsPacket {
     companion object {
         internal const val LOG_PURPOSE = "logging"
 
@@ -42,5 +43,5 @@ class LogPacket private constructor(){
 
     fun details(addendum: String) { map[LOG_DETAIL] = addendum }
 
-    fun toJsonString() = ObjectMapper().writeValueAsString(map)
+    override fun toJsonString() = ObjectMapper().writeValueAsString(map)
 }
