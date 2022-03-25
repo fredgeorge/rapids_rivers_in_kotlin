@@ -18,13 +18,13 @@ class PacketProblems(private val jsonString: String) {
 
     fun hasMessages() = hasErrors() || warnings.isNotEmpty() || informationalMessages.isNotEmpty()
 
-    fun informationOnly(explanation: String) = informationalMessages.add(explanation)
+    internal fun informationOnly(explanation: String) = informationalMessages.add(explanation)
 
-    fun warning(explanation: String) = warnings.add(explanation)
+    internal fun warning(explanation: String) = warnings.add(explanation)
 
-    fun error(explanation: String) = errors.add(explanation)
+    internal fun error(explanation: String) = errors.add(explanation)
 
-    fun severeError(explanation: String) = severeErrors.add(explanation)
+    internal fun severeError(explanation: String) = severeErrors.add(explanation)
         .also { throw PacketProblemsException(this) }
 
     override fun toString(): String {

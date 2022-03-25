@@ -31,8 +31,19 @@ dependencies {
     // Need Jackson for JSON support
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.13.2")
 
+    // Jupiter using JUnit 5
+    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+
     // Use counting metrics Detekt plugin
     detektPlugins("com.github.fredgeorge.detektmethodmcc:detekt-method-mcc:1.1")
+}
+
+tasks.test {
+    useJUnitPlatform()  // Encourages(?) JUnit 5 use by Kotlin
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 detekt {

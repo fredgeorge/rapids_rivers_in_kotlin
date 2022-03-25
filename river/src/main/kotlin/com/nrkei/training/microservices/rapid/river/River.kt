@@ -37,29 +37,32 @@ class River(
     }
 
     override fun message(sendPort: RapidsConnection, message: String) {
-        try {
-            println(message)
-            Packet(ObjectMapper().readValue<Map<String, Any>>(message)).apply {
-                println(this)
-                when {
-                    hasInvalidReadCount(maxReadCount) -> this@River.triggerLoopDetection(this)
-                    isHeartBeat() -> this@River.triggerHeartBeat(this)
-                    doesMeetRules(rules) -> this@River.triggerPacket(this)
-                    else -> this@River.triggerFailingPacket(this)
+        PacketProblems(message).also { problems ->
+            try {
+                println(message)
+                Packet(ObjectMapper().readValue<Map<String, Any>>(message)).apply {
+                    println(this)
+                    when {
+                        hasInvalidReadCount(maxReadCount) -> this@River.triggerLoopDetection(this, problems)
+                        isHeartBeat() -> this@River.triggerHeartBeat(this)
+                        doesMeetRules(rules) -> this@River.triggerPacket(this, problems)
+                        else -> this@River.triggerRejectedPacket(this, problems)
+                    }
+                    println(this)
                 }
-                println(this)
+            } catch (e: JsonParseException) {
+                problems.error("Invalid JSON format detected")
+                triggerInvalidPacket(message, problems)
             }
-        } catch (e: JsonParseException) {
-            triggerInvalidPacket(message)
         }
     }
 
-    private fun triggerInvalidPacket(message: String) {
-        systemListeners.forEach { service -> service.invalidFormat(message) }
+    private fun triggerInvalidPacket(message: String, problems: PacketProblems) {
+        systemListeners.forEach { service -> service.invalidFormat(message, problems) }
     }
 
-    private fun triggerLoopDetection(packet: Packet) {
-        systemListeners.forEach { service -> service.loopDetected(packet) }
+    private fun triggerLoopDetection(packet: Packet, problems: PacketProblems) {
+        systemListeners.forEach { service -> service.loopDetected(packet, problems) }
     }
 
     private fun triggerHeartBeat(packet: Packet) {
@@ -74,21 +77,23 @@ class River(
         }
     }
 
-    private fun triggerFailingPacket(packet: Packet) {
-
+    private fun triggerPacket(packet: Packet, infoWarnings: PacketProblems) {
+        listeners.forEach { service -> service.packet(packet, infoWarnings) }
     }
 
-    private fun triggerPacket(packet: Packet) {
-
+    private fun triggerRejectedPacket(packet: Packet, problems: PacketProblems) {
+        listeners.forEach { service -> service.rejectedPacket(packet, problems) }
     }
 
     interface PacketListener {
         val name: String get() = "${this.javaClass.simpleName} [${this.hashCode()}]"
         fun isStillAlive(): Boolean = true
+        fun packet(packet: Packet, infoWarnings: PacketProblems)
+        fun rejectedPacket(packet: Packet, problems: PacketProblems)
     }
 
     interface SystemListener : PacketListener {
-        fun invalidFormat(invalidString: String)
-        fun loopDetected(packet: Packet)
+        fun invalidFormat(invalidString: String, problems: PacketProblems)
+        fun loopDetected(packet: Packet, problems: PacketProblems)
     }
 }

@@ -9,8 +9,8 @@ package com.nrkei.training.microservices.unit
 import com.nrkei.training.microservices.rapid.packet.LogPacket
 import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.INVALID_JSON
 import com.nrkei.training.microservices.rapid.packet.Packet
+import com.nrkei.training.microservices.rapid.river.PacketProblems
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
 import com.nrkei.training.microservices.rapid.river.River
 import com.nrkei.training.microservices.unit.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 // Ensures system errors trigger reaction
-internal class UnexpectedPacketTest {
+internal class InvalidPacketTest {
 
     @Test
     fun `invalid JSON`() {
@@ -42,15 +42,23 @@ internal class UnexpectedPacketTest {
     private class TestSystemService(private val rapids: RapidsConnection) : River.SystemListener {
         override fun isStillAlive() = true
 
-        override fun invalidFormat(invalidString: String) {
+        override fun invalidFormat(invalidString: String, problems: PacketProblems) {
             LogPacket.error(INVALID_JSON, name).apply {
                 details(invalidString)
                 rapids.publish(this)
             }
         }
 
-        override fun loopDetected(packet: Packet) {
-            TODO("Not yet implemented")
+        override fun loopDetected(packet: Packet, problems: PacketProblems) {
+            problems.severeError("Unexpected invocation of loopDetected API")
+        }
+
+        override fun packet(packet: Packet, infoWarnings: PacketProblems) {
+            infoWarnings.severeError("Unexpected invocation of packet API")
+        }
+
+        override fun rejectedPacket(packet: Packet, problems: PacketProblems) {
+            problems.severeError("Unexpected invocation of rejectedPacket API")
         }
     }
 }

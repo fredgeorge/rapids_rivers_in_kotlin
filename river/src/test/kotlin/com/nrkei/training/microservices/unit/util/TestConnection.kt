@@ -22,5 +22,5 @@ internal class TestConnection : RapidsConnection {
         sentMessages.add(message.toJsonString())
     }
 
-    fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
+    internal fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
 }

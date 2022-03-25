@@ -4,7 +4,7 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.microservices.rapids_rivers
+package com.nrkei.training.microservices.unit
 
 import com.nrkei.training.microservices.rapid.river.PacketProblems
 import com.nrkei.training.microservices.rapid.river.PacketProblems.PacketProblemsException
