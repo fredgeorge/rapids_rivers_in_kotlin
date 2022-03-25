@@ -40,24 +40,24 @@ internal class InvalidPacketTest {
     }
 
     private class TestSystemService(private val rapids: RapidsConnection) : River.SystemListener {
-        override fun isStillAlive() = true
+        override fun isStillAlive(connection: RapidsConnection) = true
 
-        override fun invalidFormat(invalidString: String, problems: PacketProblems) {
+        override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
             LogPacket.error(INVALID_JSON, name).apply {
                 details(invalidString)
                 rapids.publish(this)
             }
         }
 
-        override fun loopDetected(packet: Packet, problems: PacketProblems) {
+        override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
             problems.severeError("Unexpected invocation of loopDetected API")
         }
 
-        override fun packet(packet: Packet, infoWarnings: PacketProblems) {
+        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
             infoWarnings.severeError("Unexpected invocation of packet API")
         }
 
-        override fun rejectedPacket(packet: Packet, problems: PacketProblems) {
+        override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
             problems.severeError("Unexpected invocation of rejectedPacket API")
         }
     }

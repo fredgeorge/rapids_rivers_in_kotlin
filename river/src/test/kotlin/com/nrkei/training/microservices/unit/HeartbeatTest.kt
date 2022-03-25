@@ -9,6 +9,7 @@ package com.nrkei.training.microservices.unit
 import com.nrkei.training.microservices.rapid.packet.HeartBeat
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.PacketProblems
+import com.nrkei.training.microservices.rapid.river.RapidsConnection
 import com.nrkei.training.microservices.rapid.river.River
 import com.nrkei.training.microservices.unit.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -50,11 +51,11 @@ internal class HeartbeatTest {
 
 
     private class TestService(private val isAliveResponse: Boolean) : River.PacketListener {
-        override fun isStillAlive() = isAliveResponse
-        override fun packet(packet: Packet, infoWarnings: PacketProblems) {
+        override fun isStillAlive(connection: RapidsConnection) = isAliveResponse
+        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
             infoWarnings.severeError("Unexpected invocation of packet API")
         }
-        override fun rejectedPacket(packet: Packet, problems: PacketProblems) {
+        override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
             problems.severeError("Unexpected invocation of rejectedPacket API")
         }
     }

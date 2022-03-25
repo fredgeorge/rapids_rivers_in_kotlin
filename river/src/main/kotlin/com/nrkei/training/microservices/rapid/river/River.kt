@@ -58,16 +58,16 @@ class River(
     }
 
     private fun triggerInvalidPacket(message: String, problems: PacketProblems) {
-        systemListeners.forEach { service -> service.invalidFormat(message, problems) }
+        systemListeners.forEach { service -> service.invalidFormat(connection, message, problems) }
     }
 
     private fun triggerLoopDetection(packet: Packet, problems: PacketProblems) {
-        systemListeners.forEach { service -> service.loopDetected(packet, problems) }
+        systemListeners.forEach { service -> service.loopDetected(connection, packet, problems) }
     }
 
     private fun triggerHeartBeat(packet: Packet) {
         listeners.forEach { service ->
-            if(service.isStillAlive()) {
+            if(service.isStillAlive(connection)) {
                 packet[HeartBeat.HEART_BEAT_RESPONDER] = service.name
                 connection.publish(packet)
             }
@@ -78,22 +78,22 @@ class River(
     }
 
     private fun triggerPacket(packet: Packet, infoWarnings: PacketProblems) {
-        listeners.forEach { service -> service.packet(packet, infoWarnings) }
+        listeners.forEach { service -> service.packet(connection, packet, infoWarnings) }
     }
 
     private fun triggerRejectedPacket(packet: Packet, problems: PacketProblems) {
-        listeners.forEach { service -> service.rejectedPacket(packet, problems) }
+        listeners.forEach { service -> service.rejectedPacket(connection, packet, problems) }
     }
 
     interface PacketListener {
         val name: String get() = "${this.javaClass.simpleName} [${this.hashCode()}]"
-        fun isStillAlive(): Boolean = true
-        fun packet(packet: Packet, infoWarnings: PacketProblems)
-        fun rejectedPacket(packet: Packet, problems: PacketProblems)
+        fun isStillAlive(connection: RapidsConnection): Boolean = true
+        fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems)
+        fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems)
     }
 
     interface SystemListener : PacketListener {
-        fun invalidFormat(invalidString: String, problems: PacketProblems)
-        fun loopDetected(packet: Packet, problems: PacketProblems)
+        fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems)
+        fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems)
     }
 }
