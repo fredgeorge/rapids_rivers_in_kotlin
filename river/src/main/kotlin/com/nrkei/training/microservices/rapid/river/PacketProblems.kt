@@ -24,9 +24,8 @@ class PacketProblems(private val jsonString: String) {
 
     fun error(explanation: String) = errors.add(explanation)
 
-    fun severeError(explanation: String) = severeErrors.add(explanation).also {
-        throw PacketProblemsException(this)
-    }
+    fun severeError(explanation: String) = severeErrors.add(explanation)
+        .also { throw PacketProblemsException(this) }
 
     override fun toString(): String {
         if (!hasMessages()) return "No errors detected in JSON:\n\t$jsonString"
