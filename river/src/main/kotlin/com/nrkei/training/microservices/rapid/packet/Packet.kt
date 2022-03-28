@@ -39,6 +39,15 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
     operator fun set(key: String, value: Any) = map.set(key, value)
 
+    fun isMissing(key: String) = map[key] == null || isEmpty(key)
+
+    private fun isEmpty(key: String): Boolean {
+        return map[key]?.let { value ->
+            if (value is String && value.isEmpty()) return true
+            return value is List<*> && value.size == 0
+        } ?: true
+    }
+
     override fun toJsonString() = ObjectMapper().writeValueAsString(map)
 
     override fun toString() = map.toString()

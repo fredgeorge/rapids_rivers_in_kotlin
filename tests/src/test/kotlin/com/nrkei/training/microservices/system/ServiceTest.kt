@@ -6,6 +6,7 @@
 
 package com.nrkei.training.microservices.system
 
+import com.nrkei.training.microservices.rapid.filter.Validation
 import com.nrkei.training.microservices.rapid.filter.rules
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.PacketProblems
@@ -38,7 +39,6 @@ internal class ServiceTest {
         private const val KEY_TO_BE_ADDED = "key_to_be_added"
         private const val EMPTY_ARRAY_KEY = "contributing_services"
         private const val EMPTY_STRING_KEY = "frequent_renter"
-        private const val INTERESTING_KEY = "frequent_renter"
         private const val SOLUTIONS_KEY = "solutions"
     }
 
@@ -98,36 +98,8 @@ internal class ServiceTest {
         assertEquals(1, invocationCount)
     }
 
-    @Test fun `missing required key`() {
-        var invocationCount = 0
-        connection.register(object: PacketListener {
-            override val rules = rules { require key "missing key" }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
-                fail("Unexpected invocation of packer API\n")
-            }
-            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
-                assertTrue(problems.hasErrors())
-                invocationCount += 1
-            }
-        })
-        connection inject SOLUTION_STRING
-        assertEquals(1, invocationCount)
-    }
-
     @Test fun `haw required key, but wrong value`() {
-        var invocationCount = 0
-        connection.register(object: PacketListener {
-            override val rules = rules { require key NEED_KEY value "hotel_offer" }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
-                fail("Unexpected invocation of packer API\n")
-            }
-            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
-                assertTrue(problems.hasErrors())
-                invocationCount += 1
-            }
-        })
-        connection inject SOLUTION_STRING
-        assertEquals(1, invocationCount)
+        assertRejectedPacket(rules { require key NEED_KEY value "hotel_offer" })
     }
 
     @Test fun `forbidden key missing`() {
@@ -173,6 +145,63 @@ internal class ServiceTest {
         connection inject SOLUTION_STRING
         assertEquals(1, invocationCount)
         assertTrue("hotel_offer" in connection.sentMessages.first())
+    }
+
+    @Test fun `forbidden key can have value set`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { forbid key KEY_TO_BE_ADDED }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                packet[KEY_TO_BE_ADDED] = "hotel_offer"
+                connection.publish(packet)
+                assertFalse(infoWarnings.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+        assertTrue("hotel_offer" in connection.sentMessages.first())
+    }
+
+    @Test fun `missing, empty string, or empty array all are considered missing`() {
+        assertValidPacket(rules { forbid key KEY_TO_BE_ADDED })
+        assertValidPacket(rules { forbid key EMPTY_ARRAY_KEY })
+        assertValidPacket(rules { forbid key EMPTY_STRING_KEY })
+    }
+
+    @Test fun `missing, empty string, or empty array all fail required validation`() {
+        assertRejectedPacket(rules { require key "missing key" })
+        assertRejectedPacket(rules { require key EMPTY_ARRAY_KEY })
+        assertRejectedPacket(rules { require key EMPTY_STRING_KEY })
+    }
+
+    private fun assertValidPacket(rules: List<Validation>) {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                assertFalse(infoWarnings.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+    }
+
+    private fun assertRejectedPacket(rules: List<Validation>) {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                fail("Unexpected invocation of packer API\n")
+            }
+            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+                assertTrue(problems.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
     }
 
     private class TestConnection : RapidsConnection {
