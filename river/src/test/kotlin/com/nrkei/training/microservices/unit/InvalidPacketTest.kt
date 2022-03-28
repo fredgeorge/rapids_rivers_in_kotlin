@@ -6,6 +6,7 @@
 
 package com.nrkei.training.microservices.unit
 
+import com.nrkei.training.microservices.rapid.filter.rules
 import com.nrkei.training.microservices.rapid.packet.LogPacket
 import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.INVALID_JSON
 import com.nrkei.training.microservices.rapid.packet.Packet
@@ -40,6 +41,8 @@ internal class InvalidPacketTest {
     }
 
     private class TestSystemService(private val rapids: RapidsConnection) : River.SystemListener {
+        override val rules = rules {  }
+
         override fun isStillAlive(connection: RapidsConnection) = true
 
         override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {

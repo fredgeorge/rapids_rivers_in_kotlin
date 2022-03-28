@@ -6,6 +6,7 @@
 
 package com.nrkei.training.microservices.system
 
+import com.nrkei.training.microservices.rapid.filter.rules
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.PacketProblems
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
@@ -51,6 +52,7 @@ internal class ServiceTest {
     @Test
     fun `valid JSON extracted`() {
         river.register(object: TestService() {
+            override val rules = rules {  }
             override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
                 assertFalse(infoWarnings.hasErrors())
             }
@@ -69,10 +71,11 @@ internal class ServiceTest {
             throw IllegalStateException("The publish API should not be used")
         }
 
-        internal fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
+        fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
     }
 
     private open class TestService: River.PacketListener {
+        override val rules = rules {  }
         override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
             fail("Unexpected success parsing JSON packet. Packet is: \n" +
                 packet.toJsonString() +

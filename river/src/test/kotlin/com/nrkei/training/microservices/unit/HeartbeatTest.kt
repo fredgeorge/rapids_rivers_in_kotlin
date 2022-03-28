@@ -6,6 +6,7 @@
 
 package com.nrkei.training.microservices.unit
 
+import com.nrkei.training.microservices.rapid.filter.rules
 import com.nrkei.training.microservices.rapid.packet.HeartBeat
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.PacketProblems
@@ -51,6 +52,7 @@ internal class HeartbeatTest {
 
 
     private class TestService(private val isAliveResponse: Boolean) : River.PacketListener {
+        override val rules = rules {  }
         override fun isStillAlive(connection: RapidsConnection) = isAliveResponse
         override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
             infoWarnings.severeError("Unexpected invocation of packet API")

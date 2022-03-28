@@ -87,6 +87,7 @@ class River(
 
     interface PacketListener {
         val name: String get() = "${this.javaClass.simpleName} [${this.hashCode()}]"
+        val rules: List<Validation>
         fun isStillAlive(connection: RapidsConnection): Boolean = true // Default if there is nothing specific to verify
         fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems)
         fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {} // Optional; for debugging

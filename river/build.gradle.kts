@@ -41,9 +41,6 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()  // Encourages(?) JUnit 5 use by Kotlin
-    testLogging {
-        events("passed", "skipped", "failed")
-    }
 }
 
 detekt {
