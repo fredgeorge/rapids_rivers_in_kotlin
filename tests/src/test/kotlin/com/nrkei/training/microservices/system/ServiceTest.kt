@@ -12,7 +12,9 @@ import com.nrkei.training.microservices.rapid.river.PacketProblems
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
 import com.nrkei.training.microservices.rapid.river.RapidsPacket
 import com.nrkei.training.microservices.rapid.river.River
-import org.junit.jupiter.api.Assertions.assertFalse
+import com.nrkei.training.microservices.rapid.river.River.PacketListener
+import com.nrkei.training.microservices.rapid.river.River.SystemListener
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -47,27 +49,68 @@ internal class ServiceTest {
         connection = TestConnection()
     }
 
-    @Test
-    fun `valid JSON extracted`() {
-        connection.register(object: TestService() {
+    @Test fun `valid JSON extracted`() {
+        connection.register(object: PacketListener {
             override val rules = rules {  }
             override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                println(infoWarnings)
                 assertFalse(infoWarnings.hasErrors())
             }
         })
-        connection.injectMessage(SOLUTION_STRING)
+        connection inject SOLUTION_STRING
+    }
+
+    @Test fun `invalid JSON format`() {
+        var invocationCount = 0
+        connection.register(object: TestSystemService() {
+            override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
+                assertTrue(problems.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject MISSING_COMMA
+        assertEquals(1, invocationCount)
+    }
+
+    @Test fun `required key exists`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { require key NEED_KEY }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                assertFalse(infoWarnings.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+    }
+
+    @Test fun `missing required key`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { require key "missing key" }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                fail("Unexpected invocation of packer API\n")
+            }
+            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+                assertTrue(problems.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
     }
 
     private class TestConnection : RapidsConnection {
         private val rivers = mutableListOf<RapidsConnection.MessageListener>()
 
-        override fun register(listener: River.PacketListener) {
+        override fun register(listener: PacketListener) {
             River(this, listener.rules, 0).also { river ->
                 rivers.add(river)
                 river.register(listener) }
         }
 
-        override fun register(listener: River.SystemListener) {
+        override fun register(listener: SystemListener) {
             River(this, listener.rules, 0).also { river ->
                 rivers.add(river)
                 river.register(listener) }
@@ -77,18 +120,36 @@ internal class ServiceTest {
             throw IllegalStateException("The publish API should not be used")
         }
 
-        fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
+        infix fun inject(content: String) = rivers.forEach { it.message(this, content) }
     }
 
-    private open class TestService: River.PacketListener {
+    private open class TestSystemService: SystemListener {
         override val rules = rules {  }
+
         override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
-            fail("Unexpected success parsing JSON packet. Packet is: \n" +
+            fail("Unexpected invocation of packer API. Packet is: \n" +
                 packet.toJsonString() +
                 "\nWarnings discovered were:\n" +
                 infoWarnings.toString()
             )
         }
+
+        override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
+            fail("Unexpected invocation of invalidFormat API. Message is: \n" +
+                    invalidString +
+                    "\nProblems discovered were:\n" +
+                    problems.toString()
+            )
+        }
+
+        override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+            fail("Unexpected invocation of loopDetected API. Packet is: \n" +
+                    packet.toJsonString() +
+                    "\nProblems discovered were:\n" +
+                    problems.toString()
+            )
+        }
+
 
     }
 }

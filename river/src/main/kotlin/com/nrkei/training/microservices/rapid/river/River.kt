@@ -41,7 +41,7 @@ class River(
                     when {
                         hasInvalidReadCount(maxReadCount) -> this@River.triggerLoopDetection(this, problems)
                         isHeartBeat() -> this@River.triggerHeartBeat(this)
-                        doesMeetRules(rules) -> this@River.triggerPacket(this, problems)
+                        doesMeetRules(rules, problems) -> this@River.triggerPacket(this, problems)
                         else -> this@River.triggerRejectedPacket(this, problems)
                     }
                     println(this)
