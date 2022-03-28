@@ -12,7 +12,7 @@ import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.INVALID
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.river.PacketProblems
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.River
+import com.nrkei.training.microservices.rapid.river.River.SystemListener
 import com.nrkei.training.microservices.unit.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -24,24 +24,22 @@ internal class InvalidPacketTest {
     @Test
     fun `invalid JSON`() {
         TestConnection().also { rapids ->
-            River(rapids).also { river ->
-                river.register(TestSystemService(rapids))
-                rapids.injectMessage("qwerty")
-                rapids.sentMessages.also { messages ->
-                    assertEquals(1, messages.size)
-                    messages.first().also { message ->
-                        assertTrue("log_severity" in message)
-                        assertTrue("error" in message)
-                        assertTrue("log_detail" in message)
-                        println(message)
-                    }
+            rapids.register(TestSystemService(rapids))
+            rapids.injectMessage("qwerty")
+            rapids.sentMessages.also { messages ->
+                assertEquals(1, messages.size)
+                messages.first().also { message ->
+                    assertTrue("log_severity" in message)
+                    assertTrue("error" in message)
+                    assertTrue("log_detail" in message)
+                    println(message)
                 }
             }
         }
     }
 
-    private class TestSystemService(private val rapids: RapidsConnection) : River.SystemListener {
-        override val rules = rules {  }
+    private class TestSystemService(private val rapids: RapidsConnection) : SystemListener {
+        override val rules = rules { }
 
         override fun isStillAlive(connection: RapidsConnection) = true
 

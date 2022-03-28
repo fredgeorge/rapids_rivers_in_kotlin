@@ -9,7 +9,9 @@ package com.nrkei.training.microservices.rapid.river
 // Understands access to an undifferentiated stream of messages
 interface RapidsConnection {
 
-    fun register(listener: MessageListener)
+    fun register(listener: River.PacketListener) // For services
+
+    fun register(listener: River.SystemListener) // For system services (monitoring, system failures)
 
     fun publish(message: RapidsPacket)
 

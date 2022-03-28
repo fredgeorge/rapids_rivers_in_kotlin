@@ -41,17 +41,15 @@ internal class ServiceTest {
     }
 
     private lateinit var connection: TestConnection
-    private lateinit var river: River
 
     @BeforeEach
     fun setup() {
         connection = TestConnection()
-        river = River(connection).also { connection.register(it) }
     }
 
     @Test
     fun `valid JSON extracted`() {
-        river.register(object: TestService() {
+        connection.register(object: TestService() {
             override val rules = rules {  }
             override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
                 assertFalse(infoWarnings.hasErrors())
@@ -63,8 +61,16 @@ internal class ServiceTest {
     private class TestConnection : RapidsConnection {
         private val rivers = mutableListOf<RapidsConnection.MessageListener>()
 
-        override fun register(listener: RapidsConnection.MessageListener) {
-            rivers.add(listener)
+        override fun register(listener: River.PacketListener) {
+            River(this, listener.rules, 0).also { river ->
+                rivers.add(river)
+                river.register(listener) }
+        }
+
+        override fun register(listener: River.SystemListener) {
+            River(this, listener.rules, 0).also { river ->
+                rivers.add(river)
+                river.register(listener) }
         }
 
         override fun publish(message: RapidsPacket) {

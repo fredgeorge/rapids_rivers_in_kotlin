@@ -8,14 +8,23 @@ package com.nrkei.training.microservices.unit.util
 
 import com.nrkei.training.microservices.rapid.river.RapidsConnection
 import com.nrkei.training.microservices.rapid.river.RapidsPacket
+import com.nrkei.training.microservices.rapid.river.River
 
 // Simulates an event bus
-internal class TestConnection : RapidsConnection {
+class TestConnection : RapidsConnection {
     private val rivers = mutableListOf<RapidsConnection.MessageListener>()
     val sentMessages = mutableListOf<String>()
 
-    override fun register(listener: RapidsConnection.MessageListener) {
-        rivers.add(listener)
+    override fun register(listener: River.PacketListener) {
+        River(this, listener.rules, 0).also { river ->
+            rivers.add(river)
+            river.register(listener) }
+    }
+
+    override fun register(listener: River.SystemListener) {
+        River(this, listener.rules, 0).also { river ->
+            rivers.add(river)
+            river.register(listener) }
     }
 
     override fun publish(message: RapidsPacket) {

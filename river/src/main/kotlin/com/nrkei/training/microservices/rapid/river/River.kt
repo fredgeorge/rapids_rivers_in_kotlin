@@ -23,10 +23,6 @@ class River(
     private val maxReadCount: Int = 0
 ) : MessageListener {
 
-    init {
-        connection.register(this)
-    }
-
     private val listeners = mutableListOf<PacketListener>()
     private val systemListeners = mutableListOf<SystemListener>()
 
