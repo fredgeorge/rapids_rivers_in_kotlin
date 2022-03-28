@@ -85,6 +85,19 @@ internal class ServiceTest {
         assertEquals(1, invocationCount)
     }
 
+    @Test fun `required key with required value exists`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { require key NEED_KEY value "car_rental_offer" }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                assertFalse(infoWarnings.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+    }
+
     @Test fun `missing required key`() {
         var invocationCount = 0
         connection.register(object: PacketListener {
@@ -101,8 +114,70 @@ internal class ServiceTest {
         assertEquals(1, invocationCount)
     }
 
+    @Test fun `haw required key, but wrong value`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { require key NEED_KEY value "hotel_offer" }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                fail("Unexpected invocation of packer API\n")
+            }
+            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+                assertTrue(problems.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+    }
+
+    @Test fun `forbidden key missing`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { forbid key "no such key" }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                assertFalse(infoWarnings.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+    }
+
+    @Test fun `forbidden key exists`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { forbid key NEED_KEY }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                fail("Unexpected invocation of packer API\n")
+            }
+            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+                assertTrue(problems.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+    }
+
+    @Test fun `required key can have value set or changed`() {
+        var invocationCount = 0
+        connection.register(object: PacketListener {
+            override val rules = rules { require key NEED_KEY value "car_rental_offer" }
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+                packet[NEED_KEY] = "hotel_offer"
+                connection.publish(packet)
+                assertFalse(infoWarnings.hasErrors())
+                invocationCount += 1
+            }
+        })
+        connection inject SOLUTION_STRING
+        assertEquals(1, invocationCount)
+        assertTrue("hotel_offer" in connection.sentMessages.first())
+    }
+
     private class TestConnection : RapidsConnection {
         private val rivers = mutableListOf<RapidsConnection.MessageListener>()
+        val sentMessages = mutableListOf<String>()
 
         override fun register(listener: PacketListener) {
             River(this, listener.rules, 0).also { river ->
@@ -117,7 +192,7 @@ internal class ServiceTest {
         }
 
         override fun publish(message: RapidsPacket) {
-            throw IllegalStateException("The publish API should not be used")
+            sentMessages.add(message.toJsonString())
         }
 
         infix fun inject(content: String) = rivers.forEach { it.message(this, content) }
