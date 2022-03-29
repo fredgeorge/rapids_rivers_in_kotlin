@@ -13,7 +13,7 @@ interface RapidsConnection {
 
     fun register(listener: River.SystemListener) // For system services (monitoring, system failures)
 
-    fun publish(message: RapidsPacket)
+    fun publish(packet: RapidsPacket)
 
     interface MessageListener {
         fun message(sendPort: RapidsConnection, message: String): Any?

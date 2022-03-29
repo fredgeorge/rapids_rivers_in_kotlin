@@ -39,7 +39,6 @@ internal class ServiceTest {
         private const val KEY_TO_BE_ADDED = "key_to_be_added"
         private const val EMPTY_ARRAY_KEY = "contributing_services"
         private const val EMPTY_STRING_KEY = "frequent_renter"
-        private const val SOLUTIONS_KEY = "solutions"
     }
 
     private lateinit var connection: TestConnection
@@ -220,8 +219,8 @@ internal class ServiceTest {
                 river.register(listener) }
         }
 
-        override fun publish(message: RapidsPacket) {
-            sentMessages.add(message.toJsonString())
+        override fun publish(packet: RapidsPacket) {
+            sentMessages.add(packet.toJsonString())
         }
 
         infix fun inject(content: String) = rivers.forEach { it.message(this, content) }

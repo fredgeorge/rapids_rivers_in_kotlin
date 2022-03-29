@@ -27,8 +27,8 @@ class TestConnection : RapidsConnection {
             river.register(listener) }
     }
 
-    override fun publish(message: RapidsPacket) {
-        sentMessages.add(message.toJsonString())
+    override fun publish(packet: RapidsPacket) {
+        sentMessages.add(packet.toJsonString())
     }
 
     internal fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }

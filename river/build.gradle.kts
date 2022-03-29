@@ -31,6 +31,9 @@ dependencies {
     // Need Jackson for JSON support
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.13.2")
 
+    // RabbitMQ client
+    implementation("com.rabbitmq:amqp-client:5.14.2")
+
     // Jupiter using JUnit 5
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
