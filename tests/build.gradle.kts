@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    // Needs exercises to test
+    // Needs river module to test
     implementation(project(":river"))
 
     // Align versions of all Kotlin components

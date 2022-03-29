@@ -5,4 +5,4 @@
  */
  
 rootProject.name = "rapid_rivers_in_kotlin"
-include("river", "tests")
+include("river", "tests", "rental")
