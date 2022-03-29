@@ -35,16 +35,13 @@ class River(
     override fun message(sendPort: RapidsConnection, message: String) {
         PacketProblems(message).also { problems ->
             try {
-                println(message)
                 Packet(ObjectMapper().readValue<Map<String, Any>>(message)).apply {
-                    println(this)
                     when {
                         hasInvalidReadCount(maxReadCount) -> this@River.triggerLoopDetection(this, problems)
                         isHeartBeat() -> this@River.triggerHeartBeat(this)
                         doesMeetRules(rules, problems) -> this@River.triggerPacket(this, problems)
                         else -> this@River.triggerRejectedPacket(this, problems)
                     }
-                    println(this)
                 }
             } catch (e: JsonParseException) {
                 problems.error("Invalid JSON format detected")

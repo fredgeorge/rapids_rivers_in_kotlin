@@ -81,7 +81,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
                 properties: AMQP.BasicProperties, body: ByteArray
             ) {
                 String(body, Charset.forName("UTF-8")).also { message ->
-                    System.out.println(" [>] Received '" + message + "'")
+//                    System.out.println(" [>] Received '" + message + "'")
                     rivers.forEach { it.message(sendPort, message) }
                 }
             }

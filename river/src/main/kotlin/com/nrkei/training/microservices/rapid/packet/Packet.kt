@@ -21,6 +21,8 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
         internal const val READ_COUNT = "system_read_count"
     }
 
+    constructor(vararg pairs: Pair<String, Any>): this(pairs.toMap())
+
     private val map = map.toMutableMap()
 
     internal fun hasInvalidReadCount(maxReadCount: Int): Boolean =
