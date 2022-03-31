@@ -22,7 +22,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
         private const val RABBIT_MQ_PUB_SUB = "fanout"
         private const val EXCHANGE_NAME = "rapids"
 
-        private fun PacketListener.toQueueName() = "${this.name}_${UUID.randomUUID().toString()}"
+        private fun PacketListener.toQueueName() = this.name
     }
 
     private val factory = ConnectionFactory().apply {
@@ -35,11 +35,11 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
     private val rivers = mutableListOf<RapidsConnection.MessageListener>()
 
     override fun register(listener: PacketListener) {
-        river(listener).register(listener)
+        river(listener) register listener
     }
 
     override fun register(listener: River.SystemListener) {
-        river(listener).register(listener)
+        river(listener) register listener
     }
 
     override fun publish(packet: RapidsPacket) {
