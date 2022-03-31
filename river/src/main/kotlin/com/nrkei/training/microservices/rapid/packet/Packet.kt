@@ -26,7 +26,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
     private val map = map.toMutableMap()
 
     internal fun hasInvalidReadCount(maxReadCount: Int): Boolean =
-        map.getOrPut(READ_COUNT, { 0 }).let {
+        map.getOrPut(READ_COUNT) { 0 }.let {
             map[READ_COUNT] = (it as Int) + 1
             !(maxReadCount == 0 || map[READ_COUNT] as Int <= maxReadCount)
         }
@@ -50,7 +50,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
         } ?: true
     }
 
-    override fun toJsonString() = ObjectMapper().writeValueAsString(map)
+    override fun toJsonString(): String = ObjectMapper().writeValueAsString(map)
 
     override fun toString() = map.toString()
 

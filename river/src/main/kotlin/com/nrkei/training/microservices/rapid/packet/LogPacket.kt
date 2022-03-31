@@ -28,7 +28,7 @@ class LogPacket private constructor() : RapidsPacket {
         internal const val SERVICE_NOT_RESPONDING = "service_not_responding"
         const val INVALID_JSON = "invalid_json"
 
-        internal const val LOG_DETAIL = "log_detail"
+        internal const val LOG_MESSAGE = "log_message"
 
         fun error(cause: String, source: String) = LogPacket().apply {
             map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
@@ -41,7 +41,7 @@ class LogPacket private constructor() : RapidsPacket {
 
     private val map = mutableMapOf<String, Any>()
 
-    fun details(addendum: String) { map[LOG_DETAIL] = addendum }
+    fun message(description: String) { map[LOG_MESSAGE] = description }
 
     override fun toJsonString() = ObjectMapper().writeValueAsString(map)
 }
