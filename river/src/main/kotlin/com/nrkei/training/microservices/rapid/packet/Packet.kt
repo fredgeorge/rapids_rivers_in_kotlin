@@ -19,6 +19,8 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
         internal const val SYSTEM_PURPOSE = "system_purpose"
 
         internal const val SYSTEM_READ_COUNT = "system_read_count"
+
+        internal const val SYSTEM_BREADCRUMBS = "system_breadcrumbs"
     }
 
     constructor(vararg pairs: Pair<String, Any>): this(pairs.toMap())

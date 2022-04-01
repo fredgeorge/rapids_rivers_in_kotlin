@@ -14,6 +14,7 @@ import com.nrkei.training.microservices.rapid.packet.HeartBeat
 import com.nrkei.training.microservices.rapid.packet.LogPacket
 import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.SERVICE_NOT_RESPONDING
 import com.nrkei.training.microservices.rapid.packet.Packet
+import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_BREADCRUMBS
 import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
 
 // Understands a themed flow of messages
@@ -71,7 +72,11 @@ class River(
     }
 
     private fun triggerPacket(packet: Packet, infoWarnings: PacketProblems) {
-        listeners.forEach { service -> service.packet(connection, packet, infoWarnings) }
+        val breadcrumbs = (packet[SYSTEM_BREADCRUMBS] as List<String>?)?.toMutableList() ?: mutableListOf()
+        listeners.forEach { service ->
+            packet[SYSTEM_BREADCRUMBS] = breadcrumbs + service.name
+            service.packet(connection, packet, infoWarnings)
+        }
     }
 
     private fun triggerRejectedPacket(packet: Packet, problems: PacketProblems) {
