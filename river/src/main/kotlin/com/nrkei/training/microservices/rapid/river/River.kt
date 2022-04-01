@@ -72,7 +72,7 @@ class River(
     }
 
     private fun triggerPacket(packet: Packet, infoWarnings: PacketProblems) {
-        val breadcrumbs = (packet[SYSTEM_BREADCRUMBS] as List<String>?)?.toMutableList() ?: mutableListOf()
+        val breadcrumbs = (packet[SYSTEM_BREADCRUMBS] as List<String>?) ?: emptyList()
         listeners.forEach { service ->
             packet[SYSTEM_BREADCRUMBS] = breadcrumbs + service.name
             service.packet(connection, packet, infoWarnings)
