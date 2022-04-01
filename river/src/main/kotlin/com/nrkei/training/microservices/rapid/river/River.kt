@@ -20,7 +20,7 @@ import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageList
 class River(
     private val connection: RapidsConnection,
     private val rules: List<Validation> = emptyList(),
-    private val maxReadCount: Int = 0
+    private val maxReadCount: Int
 ) : MessageListener {
 
     private val listeners = mutableListOf<PacketListener>()

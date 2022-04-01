@@ -56,7 +56,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
     }
 
     private fun river(listener: PacketListener) =
-        River(this, listener.rules, 0).also { river ->
+        River(this, listener.rules, 9).also { river ->
             rivers.add(river)
             queueName = listener.toQueueName()
             configureQueue()

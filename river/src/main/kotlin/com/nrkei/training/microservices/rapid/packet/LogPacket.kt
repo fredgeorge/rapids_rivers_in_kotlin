@@ -27,6 +27,7 @@ class LogPacket private constructor() : RapidsPacket {
         internal const val LOG_CAUSE = "log_cause"
         internal const val SERVICE_NOT_RESPONDING = "service_not_responding"
         const val INVALID_JSON = "invalid_json"
+        const val LOOP_DETECTED = "loop_detected"
 
         internal const val LOG_MESSAGE = "log_message"
 

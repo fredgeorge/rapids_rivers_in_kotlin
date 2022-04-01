@@ -18,7 +18,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
         internal const val SYSTEM_PURPOSE = "system_purpose"
 
-        internal const val READ_COUNT = "system_read_count"
+        internal const val SYSTEM_READ_COUNT = "system_read_count"
     }
 
     constructor(vararg pairs: Pair<String, Any>): this(pairs.toMap())
@@ -26,9 +26,9 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
     private val map = map.toMutableMap()
 
     internal fun hasInvalidReadCount(maxReadCount: Int): Boolean =
-        map.getOrPut(READ_COUNT) { 0 }.let {
-            map[READ_COUNT] = (it as Int) + 1
-            !(maxReadCount == 0 || map[READ_COUNT] as Int <= maxReadCount)
+        map.getOrPut(SYSTEM_READ_COUNT) { 0 }.let {
+            map[SYSTEM_READ_COUNT] = (it as Int) + 1
+            !(maxReadCount == 0 || map[SYSTEM_READ_COUNT] as Int <= maxReadCount)
         }
 
     internal fun isHeartBeat() = doesMeetRules(HeartBeat.validations, noProblemTracking)

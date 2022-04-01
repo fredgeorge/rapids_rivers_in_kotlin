@@ -31,7 +31,7 @@ internal class InvalidPacketTest {
                 messages.first().also { message ->
                     assertTrue("log_severity" in message)
                     assertTrue("error" in message)
-                    assertTrue("log_detail" in message)
+                    assertTrue("log_message" in message)
                     println(message)
                 }
             }
@@ -45,7 +45,7 @@ internal class InvalidPacketTest {
 
         override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
             LogPacket.error(INVALID_JSON, name).apply {
-                details(invalidString)
+                message(invalidString)
                 rapids.publish(this)
             }
         }
