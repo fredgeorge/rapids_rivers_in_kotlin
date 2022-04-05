@@ -33,7 +33,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
             !(maxReadCount == 0 || map[SYSTEM_READ_COUNT] as Int <= maxReadCount)
         }
 
-    internal fun isHeartBeat() = doesMeetRules(HeartBeat.validations, noProblemTracking)
+    internal fun isHeartBeat() = doesMeetRules(HeartBeat.rules, noProblemTracking)
 
     internal fun doesMeetRules(rules: List<Validation>, problems: PacketProblems) = rules
         .map { it.isValid(this, problems) }

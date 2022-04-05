@@ -15,6 +15,7 @@ import com.nrkei.training.microservices.rapid.packet.LogPacket
 import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.SERVICE_NOT_RESPONDING
 import com.nrkei.training.microservices.rapid.packet.Packet
 import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_BREADCRUMBS
+import com.nrkei.training.microservices.rapid.packet.StartUpPacket
 import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
 
 // Understands a themed flow of messages
@@ -27,10 +28,12 @@ class River(
     private val listeners = mutableListOf<PacketListener>()
     private val systemListeners = mutableListOf<SystemListener>()
 
-    infix fun register(listener: PacketListener) = listeners.add(listener)
+    infix fun register(listener: PacketListener) = listeners.add(listener).also {
+        connection.publish(StartUpPacket(listener))
+    }
 
     infix fun register(listener: SystemListener) = systemListeners.add(listener).also {
-        listeners.add(listener)
+        register(listener as PacketListener)
     }
 
     override fun message(sendPort: RapidsConnection, message: String) {

@@ -19,14 +19,14 @@ class HeartBeat : RapidsPacket {
         internal const val HEART_BEAT_PURPOSE = "heart_beat"
         internal const val HEART_BEAT_RESPONDER = "heart_beat_responder"
 
-        internal val validations = rules {
+        internal val rules = rules {
             require key PACKET_TYPE value SYSTEM_PACKET_TYPE
             require key SYSTEM_PURPOSE value HEART_BEAT_PURPOSE
             forbid key HEART_BEAT_RESPONDER
         }
     }
 
-    override fun toJsonString() = mutableMapOf<String, Any>()
+    override fun toJsonString(): String = mutableMapOf<String, Any>()
         .also { map ->
             map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
             map[SYSTEM_PURPOSE] = HEART_BEAT_PURPOSE
