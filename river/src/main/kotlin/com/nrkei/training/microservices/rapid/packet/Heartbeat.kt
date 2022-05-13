@@ -26,11 +26,11 @@ class HeartBeat : RapidsPacket {
         }
     }
 
-    override fun toJsonString(): String = mutableMapOf<String, Any>()
-        .also { map ->
-            map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
-            map[SYSTEM_PURPOSE] = HEART_BEAT_PURPOSE
-        }
-        .let { ObjectMapper().writeValueAsString(it) }
+    override fun toJsonString(): String = ObjectMapper().writeValueAsString(
+        mapOf(
+            PACKET_TYPE to SYSTEM_PACKET_TYPE,
+            SYSTEM_PURPOSE to HEART_BEAT_PURPOSE
+        )
+    )
 
 }

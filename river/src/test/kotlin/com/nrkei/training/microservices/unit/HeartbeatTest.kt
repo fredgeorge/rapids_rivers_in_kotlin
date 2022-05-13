@@ -25,8 +25,8 @@ internal class HeartbeatTest {
         TestConnection().also { rapids ->
             rapids.register(TestService(isAliveResponse = true))
             rapids.injectMessage(HeartBeat().toJsonString())
-            assertEquals(1, rapids.sentMessages.size)
-            assertTrue("heart_beat_responder" in rapids.sentMessages.first())
+            assertEquals(2, rapids.sentMessages.size)
+            assertTrue("heart_beat_responder" in rapids.sentMessages[1])
         }
     }
 
@@ -36,8 +36,8 @@ internal class HeartbeatTest {
             rapids.register(TestService(isAliveResponse = false))
             rapids.injectMessage(HeartBeat().toJsonString())
             rapids.sentMessages.also { messages ->
-                assertEquals(1, messages.size)
-                messages.first().also { message ->
+                assertEquals(2, messages.size)
+                messages[1].also { message ->
                     assertTrue("log_severity" in message)
                     assertTrue("error" in message)
                     println(message)

@@ -143,7 +143,7 @@ internal class ServiceTest {
         })
         connection inject SOLUTION_STRING
         assertEquals(1, invocationCount)
-        assertTrue("hotel_offer" in connection.sentMessages.first())
+        assertTrue("hotel_offer" in connection.sentMessages[1])
     }
 
     @Test fun `forbidden key can have value set`() {
@@ -159,7 +159,7 @@ internal class ServiceTest {
         })
         connection inject SOLUTION_STRING
         assertEquals(1, invocationCount)
-        assertTrue("hotel_offer" in connection.sentMessages.first())
+        assertTrue("hotel_offer" in connection.sentMessages[1])
     }
 
     @Test fun `missing, empty string, or empty array all are considered missing`() {

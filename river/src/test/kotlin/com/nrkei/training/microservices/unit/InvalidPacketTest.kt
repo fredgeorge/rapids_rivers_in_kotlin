@@ -27,8 +27,8 @@ internal class InvalidPacketTest {
             rapids.register(TestSystemService(rapids))
             rapids.injectMessage("qwerty")
             rapids.sentMessages.also { messages ->
-                assertEquals(1, messages.size)
-                messages.first().also { message ->
+                assertEquals(2, messages.size)
+                messages[1].also { message ->
                     assertTrue("log_severity" in message)
                     assertTrue("error" in message)
                     assertTrue("log_message" in message)

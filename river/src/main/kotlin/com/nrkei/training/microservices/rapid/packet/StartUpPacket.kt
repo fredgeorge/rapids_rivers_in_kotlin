@@ -22,11 +22,11 @@ class StartUpPacket internal constructor(service: River.PacketListener) : Rapids
 
     private val serviceName = service.name
 
-    private val map = mutableMapOf<String, Any>(
-        PACKET_TYPE to SYSTEM_PACKET_TYPE,
-        SYSTEM_PURPOSE to START_UP_PURPOSE,
-        SERVICE_NAME to serviceName
+    override fun toJsonString(): String = ObjectMapper().writeValueAsString(
+        mapOf<String, Any>(
+            PACKET_TYPE to SYSTEM_PACKET_TYPE,
+            SYSTEM_PURPOSE to START_UP_PURPOSE,
+            SERVICE_NAME to serviceName
+        )
     )
-
-    override fun toJsonString() = ObjectMapper().writeValueAsString(map)
 }
