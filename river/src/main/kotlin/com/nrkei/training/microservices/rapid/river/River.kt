@@ -41,6 +41,7 @@ class River(
             try {
                 Packet(ObjectMapper().readValue<Map<String, Any>>(message)).apply {
                     when {
+                        // TODO: Would like to process the packet as well as handle the Heartbeat
                         hasInvalidReadCount(maxReadCount) -> this@River.triggerLoopDetection(this, problems)
                         isHeartBeat() -> this@River.triggerHeartBeat(this)
                         doesMeetRules(rules, problems) -> this@River.triggerPacket(this, problems)
@@ -65,6 +66,7 @@ class River(
     private fun triggerHeartBeat(packet: Packet) {
         listeners.forEach { service ->
             if(service.isStillAlive(connection)) {
+                // TODO: Clone packet here so that it can still be processed by a Monitor, for example
                 packet[HeartBeat.HEART_BEAT_RESPONDER] = service.name
                 connection.publish(packet)
             }
