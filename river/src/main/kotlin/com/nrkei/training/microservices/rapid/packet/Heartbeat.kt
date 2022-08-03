@@ -32,5 +32,4 @@ class HeartBeat : RapidsPacket {
             SYSTEM_PURPOSE to HEART_BEAT_PURPOSE
         )
     )
-
 }

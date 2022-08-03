@@ -56,5 +56,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
     override fun toString() = map.toString()
 
+    fun clone() = Packet(map.toMutableMap())
+
     private val noProblemTracking get() = PacketProblems("")
 }

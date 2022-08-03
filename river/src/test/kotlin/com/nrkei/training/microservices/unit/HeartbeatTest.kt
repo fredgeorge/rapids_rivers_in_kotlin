@@ -23,24 +23,30 @@ internal class HeartbeatTest {
     @Test
     fun `positive response`() {
         TestConnection().also { rapids ->
-            rapids.register(TestService(isAliveResponse = true))
-            rapids.injectMessage(HeartBeat().toJsonString())
-            assertEquals(2, rapids.sentMessages.size)
-            assertTrue("heart_beat_responder" in rapids.sentMessages[1])
+            TestService(isAliveResponse = true).also { service ->
+                rapids.register(service)
+                rapids.injectMessage(HeartBeat().toJsonString())
+                assertEquals(2, rapids.sentMessages.size)
+                assertEquals(1, service.packetCount) // Heartbeat does get through
+                assertTrue("heart_beat_responder" in rapids.sentMessages[1])
+            }
         }
     }
 
     @Test
     fun `log failure if negative`() {
         TestConnection().also { rapids ->
-            rapids.register(TestService(isAliveResponse = false))
-            rapids.injectMessage(HeartBeat().toJsonString())
-            rapids.sentMessages.also { messages ->
-                assertEquals(2, messages.size)
-                messages[1].also { message ->
-                    assertTrue("log_severity" in message)
-                    assertTrue("error" in message)
-                    println(message)
+            TestService(isAliveResponse = false).also { service ->
+                rapids.register(service)
+                rapids.injectMessage(HeartBeat().toJsonString())
+                rapids.sentMessages.also { messages ->
+                    assertEquals(2, messages.size)
+                    assertEquals(1, service.packetCount)
+                    messages[1].also { message ->
+                        assertTrue("log_severity" in message)
+                        assertTrue("error" in message)
+                        println(message)
+                    }
                 }
             }
         }
@@ -48,10 +54,11 @@ internal class HeartbeatTest {
 
 
     private class TestService(private val isAliveResponse: Boolean) : PacketListener {
+        var packetCount = 0
         override val rules = rules { }
         override fun isStillAlive(connection: RapidsConnection) = isAliveResponse
         override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
-            infoWarnings.severeError("Unexpected invocation of packet API")
+            packetCount += 1
         }
 
         override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
