@@ -31,12 +31,13 @@ class LogPacket private constructor() : RapidsPacket {
 
         internal const val LOG_MESSAGE = "log_message"
 
-        fun error(cause: String, source: String) = LogPacket().apply {
+        fun error(cause: String, source: String, vararg keyValues: Pair<String, Any>) = LogPacket().apply {
             map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
             map[SYSTEM_PURPOSE] = LOG_PURPOSE
             map[LOG_SEVERITY] = ERROR_SEVERITY
             map[LOG_CAUSE] = cause
             map[LOG_SOURCE] = source
+            keyValues.forEach { map[it.first] = it.second }
         }
     }
 
@@ -44,5 +45,7 @@ class LogPacket private constructor() : RapidsPacket {
 
     fun message(description: String) { map[LOG_MESSAGE] = description }
 
-    override fun toJsonString() = ObjectMapper().writeValueAsString(map)
+    override fun toJsonString(): String = ObjectMapper().writeValueAsString(map)
+
+    override fun toString() = toJsonString()
 }
