@@ -4,14 +4,14 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.unit.util
+package com.nrkei.training.microservices.util
 
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.packet.RapidsPacket
 import com.nrkei.training.microservices.river.River
 
 // Simulates an event bus
-class TestConnection : RapidsConnection {
+internal class TestConnection : RapidsConnection {
     private val rivers = mutableListOf<RapidsConnection.MessageListener>()
     val sentMessages = mutableListOf<String>()
 

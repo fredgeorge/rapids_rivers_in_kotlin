@@ -12,7 +12,7 @@ import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.river.PacketProblems
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.river.River.PacketListener
-import com.nrkei.training.microservices.unit.util.TestConnection
+import com.nrkei.training.microservices.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

@@ -4,7 +4,7 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package system
+package com.nrkei.training.microservices.system
 
 import com.nrkei.training.microservices.filter.Validation
 import com.nrkei.training.microservices.filter.rules
