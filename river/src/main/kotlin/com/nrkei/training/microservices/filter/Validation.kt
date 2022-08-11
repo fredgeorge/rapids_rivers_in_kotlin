@@ -4,10 +4,10 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.filter
+package com.nrkei.training.microservices.filter
 
-import com.nrkei.training.microservices.rapid.packet.Packet
-import com.nrkei.training.microservices.rapid.river.PacketProblems
+import com.nrkei.training.microservices.packet.Packet
+import com.nrkei.training.microservices.river.PacketProblems
 
 interface Validation {
     fun isValid(packet: Packet, problems: PacketProblems): Boolean

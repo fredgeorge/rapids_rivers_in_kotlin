@@ -6,9 +6,9 @@
 
 package com.nrkei.training.microservices.unit.util
 
-import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.RapidsPacket
-import com.nrkei.training.microservices.rapid.river.River
+import com.nrkei.training.microservices.rapid.RapidsConnection
+import com.nrkei.training.microservices.packet.RapidsPacket
+import com.nrkei.training.microservices.river.River
 
 // Simulates an event bus
 class TestConnection : RapidsConnection {

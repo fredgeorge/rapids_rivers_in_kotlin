@@ -6,13 +6,13 @@
 
 package com.nrkei.training.microservices.unit
 
-import com.nrkei.training.microservices.rapid.filter.rules
-import com.nrkei.training.microservices.rapid.packet.LogPacket
-import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.INVALID_JSON
-import com.nrkei.training.microservices.rapid.packet.Packet
-import com.nrkei.training.microservices.rapid.river.PacketProblems
-import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.River.SystemListener
+import com.nrkei.training.microservices.filter.rules
+import com.nrkei.training.microservices.packet.LogPacket
+import com.nrkei.training.microservices.packet.LogPacket.Companion.INVALID_JSON
+import com.nrkei.training.microservices.packet.Packet
+import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.rapid.RapidsConnection
+import com.nrkei.training.microservices.river.River.SystemListener
 import com.nrkei.training.microservices.unit.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

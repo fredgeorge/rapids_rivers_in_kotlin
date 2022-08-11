@@ -4,7 +4,7 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.river
+package com.nrkei.training.microservices.river
 
 // Understands issues that arose when analyzing a JSON message
 // Implements Collecting Parameter in Refactoring by Martin Fowler

@@ -1,4 +1,4 @@
-package com.nrkei.training.microservices.rapid.river
+package com.nrkei.training.microservices.packet
 
 // Understands a message targeting an event bus
 interface RapidsPacket {

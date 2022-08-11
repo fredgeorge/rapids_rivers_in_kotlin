@@ -4,19 +4,20 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.river
+package com.nrkei.training.microservices.river
 
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.nrkei.training.microservices.rapid.filter.Validation
-import com.nrkei.training.microservices.rapid.packet.HeartBeat
-import com.nrkei.training.microservices.rapid.packet.LogPacket
-import com.nrkei.training.microservices.rapid.packet.LogPacket.Companion.SERVICE_NOT_RESPONDING
-import com.nrkei.training.microservices.rapid.packet.Packet
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_BREADCRUMBS
-import com.nrkei.training.microservices.rapid.packet.StartUpPacket
-import com.nrkei.training.microservices.rapid.river.RapidsConnection.MessageListener
+import com.nrkei.training.microservices.filter.Validation
+import com.nrkei.training.microservices.packet.HeartBeat
+import com.nrkei.training.microservices.packet.LogPacket
+import com.nrkei.training.microservices.packet.LogPacket.Companion.SERVICE_NOT_RESPONDING
+import com.nrkei.training.microservices.packet.Packet
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_BREADCRUMBS
+import com.nrkei.training.microservices.packet.StartUpPacket
+import com.nrkei.training.microservices.rapid.RapidsConnection
+import com.nrkei.training.microservices.rapid.RapidsConnection.MessageListener
 
 // Understands a themed flow of messages
 class River(

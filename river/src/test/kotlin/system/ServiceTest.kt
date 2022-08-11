@@ -6,15 +6,15 @@
 
 package system
 
-import com.nrkei.training.microservices.rapid.filter.Validation
-import com.nrkei.training.microservices.rapid.filter.rules
-import com.nrkei.training.microservices.rapid.packet.Packet
-import com.nrkei.training.microservices.rapid.river.PacketProblems
-import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.RapidsPacket
-import com.nrkei.training.microservices.rapid.river.River
-import com.nrkei.training.microservices.rapid.river.River.PacketListener
-import com.nrkei.training.microservices.rapid.river.River.SystemListener
+import com.nrkei.training.microservices.filter.Validation
+import com.nrkei.training.microservices.filter.rules
+import com.nrkei.training.microservices.packet.Packet
+import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.rapid.RapidsConnection
+import com.nrkei.training.microservices.packet.RapidsPacket
+import com.nrkei.training.microservices.river.River
+import com.nrkei.training.microservices.river.River.PacketListener
+import com.nrkei.training.microservices.river.River.SystemListener
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

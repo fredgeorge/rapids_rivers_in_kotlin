@@ -4,12 +4,11 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.packet
+package com.nrkei.training.microservices.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nrkei.training.microservices.rapid.filter.Validation
-import com.nrkei.training.microservices.rapid.river.PacketProblems
-import com.nrkei.training.microservices.rapid.river.RapidsPacket
+import com.nrkei.training.microservices.filter.Validation
+import com.nrkei.training.microservices.river.PacketProblems
 
 class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
     companion object {
@@ -22,8 +21,6 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
         internal const val SYSTEM_BREADCRUMBS = "system_breadcrumbs"
     }
-
-    constructor(vararg pairs: Pair<String, Any>): this(pairs.toMap())
 
     private val map = map.toMutableMap()
 

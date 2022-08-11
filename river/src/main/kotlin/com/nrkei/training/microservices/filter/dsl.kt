@@ -4,7 +4,7 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.filter
+package com.nrkei.training.microservices.filter
 
 fun rules(block: ValidationsBuilder.() -> Unit) =
     ValidationsBuilder().also(block).results

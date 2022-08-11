@@ -6,8 +6,8 @@
 
 package com.nrkei.training.microservices.unit
 
-import com.nrkei.training.microservices.rapid.river.PacketProblems
-import com.nrkei.training.microservices.rapid.river.PacketProblems.PacketProblemsException
+import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.river.PacketProblems.PacketProblemsException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

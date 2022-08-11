@@ -6,12 +6,12 @@
 
 package com.nrkei.training.microservices.unit
 
-import com.nrkei.training.microservices.rapid.filter.rules
-import com.nrkei.training.microservices.rapid.packet.HeartBeat
-import com.nrkei.training.microservices.rapid.packet.Packet
-import com.nrkei.training.microservices.rapid.river.PacketProblems
-import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.River.PacketListener
+import com.nrkei.training.microservices.filter.rules
+import com.nrkei.training.microservices.packet.HeartBeat
+import com.nrkei.training.microservices.packet.Packet
+import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.rapid.RapidsConnection
+import com.nrkei.training.microservices.river.River.PacketListener
 import com.nrkei.training.microservices.unit.util.TestConnection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

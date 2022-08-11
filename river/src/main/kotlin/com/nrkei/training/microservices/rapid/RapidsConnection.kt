@@ -4,7 +4,10 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.river
+package com.nrkei.training.microservices.rapid
+
+import com.nrkei.training.microservices.packet.RapidsPacket
+import com.nrkei.training.microservices.river.River
 
 // Understands access to an undifferentiated stream of messages
 interface RapidsConnection {

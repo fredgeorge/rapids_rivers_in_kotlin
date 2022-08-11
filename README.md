@@ -1,27 +1,46 @@
-# kotlin_rapids_rivers
-Kotlin implementation of Rapids/Rivers framework using RabbitMQ for the event bus.
+# rapids_rivers_in_kotlin
 
-There are a myriad of services:
+A Kotlin implementation of Rapids/Rivers framework using RabbitMQ for the event bus.
 
-- *Monitor*: A service that displays everything
-- *Need*: A service that expresses a Need for a Rental Car Offer with a possible User identification
-- *Brand Solution*: A service that makes an Offer for the overall rental car brand
-- *Location Solution*: A service that makes an Offer specific for a rental location
-- *Solution Selection*: A service that chooses the best Offer for a given Need
-- *Membership Level*: A service that adds Membership status to a Need if User is a member
-- *Membership Solution*: A service that suggests joining the Membership if User is not a member
-- *Brand Membership Solution*: A service that makes an Offer for only members
-- *Location Membership Solution*: A service that makes an Offer for only members
+## Summary
 
-These services monitor the overall system:
+This framework models the Rapids/Rivers/Pond metaphor first proposed by Fred George.
+It strives to present a relatively simple choreography scheme to allow tiny MicroServices
+to interact with minimal coupling.
 
-- *Log All*: A service that collects all the Log messages
-- *Log Error*: A service that collects only error Logs
-- *Invalid Packet Detection*: A system service that detects invalid JSON and creates Log message
-- *Loop Detection*: A system service that detects looping situations on the event bus, and creates Log message
+Originally formulated for a workshop conference in Bergen, Norway, and it has been re-implemented
+several times, including NAV (Norwegian Welfare Association) in 2019 and Orn Software in 2022 (in C#).
 
-These service deliberately generate error situations to ensure system detects and handles them
+## Dependencies
 
-- *Invalid Packet Bug*: A test service that deliberately injects non-JSON on the event bus
-- *Loop Bug*: A test service that creates an infinite message loop
+This project is built with:
 
+- IntelliJ IDEA 2022.1.3 (Ultimate Edition)
+- Java 18.0.2 Oracle
+- Kotlin 1.7.10
+- JUnit 5.8.2
+- Gradle 7.5
+- and other libraries for JSON and RabbitMQ (see build.gradle.kts)
+
+So open up the project, and let the dependencies resolve themselves. Execute the tests
+to ensure everything is working correctly.
+
+Now you are ready to run the sample MicroServices.
+
+## Execution
+
+For any event bus, an implementation of the RapidsConnection interface is required.
+A RabbitMQ implementation is included, using RabbitMQ in a pub/sub mode.
+
+To run the sample MicroServices, bring up a RabbitMQ implementation, either natively 
+or in a Docker container. Or share an existing instance running somewhere else. 
+RabbitMQ with the Management console option is recommended so you can view status
+and statistics on the event bus.
+
+Then start up the Monitor service by passing the IP address and the RabbitMQ 
+port (usually 5672) as _strings_ as input parameters. You should see a simple prompt.
+
+Next, start up the RentalNeed service with the same parameters. It should generate
+traffic that the Monitor shows on the event bus.
+
+Now you are ready to start developing your own services.

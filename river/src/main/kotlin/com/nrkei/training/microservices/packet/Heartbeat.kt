@@ -4,14 +4,13 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.packet
+package com.nrkei.training.microservices.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nrkei.training.microservices.rapid.filter.rules
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.PACKET_TYPE
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PACKET_TYPE
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PURPOSE
-import com.nrkei.training.microservices.rapid.river.RapidsPacket
+import com.nrkei.training.microservices.filter.rules
+import com.nrkei.training.microservices.packet.Packet.Companion.PACKET_TYPE
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PACKET_TYPE
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PURPOSE
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 

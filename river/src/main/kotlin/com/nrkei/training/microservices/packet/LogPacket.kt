@@ -4,30 +4,29 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.packet
+package com.nrkei.training.microservices.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.PACKET_TYPE
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PACKET_TYPE
-import com.nrkei.training.microservices.rapid.packet.Packet.Companion.SYSTEM_PURPOSE
-import com.nrkei.training.microservices.rapid.river.RapidsPacket
+import com.nrkei.training.microservices.packet.Packet.Companion.PACKET_TYPE
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PACKET_TYPE
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PURPOSE
 
 // Understands something interesting that occurred
 class LogPacket private constructor() : RapidsPacket {
     companion object {
-        internal const val LOG_PURPOSE = "logging"
+        private const val LOG_PURPOSE = "logging"
 
-        internal const val LOG_SEVERITY = "log_severity"
-        internal const val INFORMATIONAL_SEVERITY = "informational"
-        internal const val WARNING_SEVERITY = "warning"
-        internal const val ERROR_SEVERITY = "error"
+        private const val LOG_SEVERITY = "log_severity"
+        private const val INFORMATIONAL_SEVERITY = "informational"
+        private const val WARNING_SEVERITY = "warning"
+        private const val ERROR_SEVERITY = "error"
 
-        internal const val LOG_SOURCE = "log_source"
+        private const val LOG_SOURCE = "log_source"
 
-        internal const val LOG_CAUSE = "log_cause"
+        private const val LOG_CAUSE = "log_cause"
         internal const val SERVICE_NOT_RESPONDING = "service_not_responding"
-        const val INVALID_JSON = "invalid_json"
-        const val LOOP_DETECTED = "loop_detected"
+        internal const val INVALID_JSON = "invalid_json"
+        internal const val LOOP_DETECTED = "loop_detected"
 
         internal const val LOG_MESSAGE = "log_message"
 

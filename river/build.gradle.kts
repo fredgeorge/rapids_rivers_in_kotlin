@@ -10,9 +10,6 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
-
-    // Collect metrics on the exercises
-    id("io.gitlab.arturbosch.detekt").version("1.19.0")
 }
 
 repositories {
@@ -37,17 +34,8 @@ dependencies {
     // Jupiter using JUnit 5
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-
-    // Use counting metrics Detekt plugin
-    detektPlugins("com.github.fredgeorge.detektmethodmcc:detekt-method-mcc:1.1")
 }
 
 tasks.test {
     useJUnitPlatform()  // Encourages(?) JUnit 5 use by Kotlin
-}
-
-detekt {
-    toolVersion = "1.19.0"
-    config = files("config/detekt/detekt.yml")
-    buildUponDefaultConfig = true
 }

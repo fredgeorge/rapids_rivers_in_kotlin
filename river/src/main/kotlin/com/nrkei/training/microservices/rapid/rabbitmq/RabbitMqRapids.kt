@@ -4,12 +4,12 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-package com.nrkei.training.microservices.rapid.river.rabbitmq
+package com.nrkei.training.microservices.rapid.rabbitmq
 
-import com.nrkei.training.microservices.rapid.river.RapidsConnection
-import com.nrkei.training.microservices.rapid.river.RapidsPacket
-import com.nrkei.training.microservices.rapid.river.River
-import com.nrkei.training.microservices.rapid.river.River.PacketListener
+import com.nrkei.training.microservices.rapid.RapidsConnection
+import com.nrkei.training.microservices.packet.RapidsPacket
+import com.nrkei.training.microservices.river.River
+import com.nrkei.training.microservices.river.River.PacketListener
 import com.rabbitmq.client.*
 import java.io.IOException
 import java.io.UnsupportedEncodingException
