@@ -26,23 +26,34 @@ class LogPacket private constructor() : RapidsPacket {
         private const val LOG_CAUSE = "log_cause"
         internal const val SERVICE_NOT_RESPONDING = "service_not_responding"
         internal const val INVALID_JSON = "invalid_json"
-        internal const val LOOP_DETECTED = "loop_detected"
 
         internal const val LOG_MESSAGE = "log_message"
 
-        fun error(cause: String, source: String, vararg keyValues: Pair<String, Any>) = LogPacket().apply {
-            map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
-            map[SYSTEM_PURPOSE] = LOG_PURPOSE
-            map[LOG_SEVERITY] = ERROR_SEVERITY
-            map[LOG_CAUSE] = cause
-            map[LOG_SOURCE] = source
-            keyValues.forEach { map[it.first] = it.second }
-        }
+        fun error(cause: String, source: String, vararg keyValues: Pair<String, Any>) =
+            logPacket(ERROR_SEVERITY, cause, source, keyValues.toList())
+
+        fun warning(cause: String, source: String, vararg keyValues: Pair<String, Any>) =
+            logPacket(WARNING_SEVERITY, cause, source, keyValues.toList())
+
+        fun information(cause: String, source: String, vararg keyValues: Pair<String, Any>) =
+            logPacket(INFORMATIONAL_SEVERITY, cause, source, keyValues.toList())
+
+        private fun logPacket(severity: String, cause: String, source: String, keyValues: List<Pair<String, Any>>) =
+            LogPacket().apply {
+                map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
+                map[SYSTEM_PURPOSE] = LOG_PURPOSE
+                map[LOG_SEVERITY] = severity
+                map[LOG_CAUSE] = cause
+                map[LOG_SOURCE] = source
+                keyValues.forEach { map[it.first] = it.second }
+            }
     }
 
     private val map = mutableMapOf<String, Any>()
 
-    fun message(description: String) { map[LOG_MESSAGE] = description }
+    fun message(description: String) {
+        map[LOG_MESSAGE] = description
+    }
 
     override fun toJsonString(): String = ObjectMapper().writeValueAsString(map)
 
