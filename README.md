@@ -1,6 +1,10 @@
-# rapids_rivers_in_kotlin
+# rapids_rivers_in_kotlin.
 
-A Kotlin implementation of Rapids/Rivers framework using RabbitMQ for the event bus.
+Copyright (c) 2022 by Fred George 
+@author Fred George  fredgeorge@acm.org
+Licensed under the MIT License; see LICENSE file in root.
+
+A Kotlin implementation of Rapids/Rivers framework using RabbitMQ for the event bus
 
 ## Summary
 

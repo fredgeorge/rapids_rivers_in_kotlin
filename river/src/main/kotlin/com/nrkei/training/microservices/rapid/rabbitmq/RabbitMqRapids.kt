@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2022 by Fred George
- * May be used freely except for training; license required for training.
  * @author Fred George  fredgeorge@acm.org
+ * Licensed under the MIT License; see LICENSE file in root.
  */
 
 package com.nrkei.training.microservices.rapid.rabbitmq
