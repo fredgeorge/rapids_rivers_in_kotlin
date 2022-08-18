@@ -12,8 +12,11 @@ import com.nrkei.training.microservices.river.PacketProblems
 
 class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
     companion object {
-        internal const val PACKET_TYPE = "packet_type"
-        internal const val SYSTEM_PACKET_TYPE = "system_packet"
+        internal const val COMMUNITY_KEY = "community"
+        internal const val SYSTEM_COMMUNITY_VALUE = "system"
+
+        internal const val PACKET_TYPE_KEY = "packet_type"
+        internal const val SYSTEM_PACKET_TYPE_VALUE = "system_packet"
 
         internal const val SYSTEM_PURPOSE = "system_purpose"
 

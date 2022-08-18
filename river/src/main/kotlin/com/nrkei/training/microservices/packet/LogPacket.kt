@@ -7,8 +7,10 @@
 package com.nrkei.training.microservices.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nrkei.training.microservices.packet.Packet.Companion.PACKET_TYPE
-import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PACKET_TYPE
+import com.nrkei.training.microservices.packet.Packet.Companion.COMMUNITY_KEY
+import com.nrkei.training.microservices.packet.Packet.Companion.PACKET_TYPE_KEY
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_COMMUNITY_VALUE
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PACKET_TYPE_VALUE
 import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PURPOSE
 
 // Understands something interesting that occurred
@@ -40,7 +42,8 @@ class LogPacket private constructor() : RapidsPacket {
 
         private fun logPacket(severity: String, cause: String, source: String, keyValues: List<Pair<String, Any>>) =
             LogPacket().apply {
-                map[PACKET_TYPE] = SYSTEM_PACKET_TYPE
+                map[COMMUNITY_KEY] = SYSTEM_COMMUNITY_VALUE
+                map[PACKET_TYPE_KEY] = SYSTEM_PACKET_TYPE_VALUE
                 map[SYSTEM_PURPOSE] = LOG_PURPOSE
                 map[LOG_SEVERITY] = severity
                 map[LOG_CAUSE] = cause

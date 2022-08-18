@@ -7,8 +7,10 @@
 package com.nrkei.training.microservices.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nrkei.training.microservices.packet.Packet.Companion.PACKET_TYPE
-import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PACKET_TYPE
+import com.nrkei.training.microservices.packet.Packet.Companion.COMMUNITY_KEY
+import com.nrkei.training.microservices.packet.Packet.Companion.PACKET_TYPE_KEY
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_COMMUNITY_VALUE
+import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PACKET_TYPE_VALUE
 import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_PURPOSE
 import com.nrkei.training.microservices.river.River
 
@@ -23,7 +25,8 @@ class StartUpPacket internal constructor(service: River.PacketListener) : Rapids
 
     override fun toJsonString(): String = ObjectMapper().writeValueAsString(
         mapOf<String, Any>(
-            PACKET_TYPE to SYSTEM_PACKET_TYPE,
+            COMMUNITY_KEY to SYSTEM_COMMUNITY_VALUE,
+            PACKET_TYPE_KEY to SYSTEM_PACKET_TYPE_VALUE,
             SYSTEM_PURPOSE to START_UP_PURPOSE,
             SERVICE_NAME to serviceName
         )
