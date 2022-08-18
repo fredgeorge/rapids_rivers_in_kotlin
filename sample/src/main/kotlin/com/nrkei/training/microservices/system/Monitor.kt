@@ -18,6 +18,7 @@ class Monitor : SystemListener {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            require(args.size == 2) { "Missing IP and Port arguments! The IP address of the Rapids (as a string), and the Port number of the Rapids (also as a string)." }
             RabbitMqRapids(ipAddress = args[0], port = args[1]).register(Monitor())
         }
     }

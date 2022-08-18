@@ -22,6 +22,8 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
         private const val RABBIT_MQ_PUB_SUB = "fanout"
         private const val EXCHANGE_NAME = "rapids"
 
+        private const val DEFAULT_MAXIMUM_READ_COUNT = 9
+
         private fun PacketListener.toQueueName() = this.name
     }
 
@@ -56,7 +58,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
     }
 
     private fun river(listener: PacketListener) =
-        River(this, listener.rules, 9).also { river ->
+        River(this, listener.rules, DEFAULT_MAXIMUM_READ_COUNT).also { river ->
             rivers.add(river)
             queueName = listener.toQueueName()
             configureQueue()
