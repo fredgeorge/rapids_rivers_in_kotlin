@@ -6,6 +6,7 @@
 
 package com.nrkei.training.microservices.unit
 
+import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.util.TestConnection
 import com.nrkei.training.microservices.util.TestService
@@ -41,6 +42,19 @@ internal class RiverTest {
             assertSize(1, service.informationStatuses)
             assertSize(0, service.problemStatuses)
         }
+    }
+
+    @Test
+    fun `filtered services`() {
+        val acceptedService = TestService(rules { require key "integer_key" })
+        val rejectedService = TestService(rules { forbid key "integer_key" })
+        connection.register(acceptedService)
+        connection.register(rejectedService)
+        connection.publish(packet)
+        assertSize(1, acceptedService.acceptedPackets)
+        assertFalse(acceptedService.informationStatuses.first().hasErrors())
+        assertSize(1, rejectedService.rejectedPackets)
+        assertTrue(rejectedService.problemStatuses.first().hasErrors())
     }
 
     private fun assertSize(expectedSize: Int, results: List<*>) {

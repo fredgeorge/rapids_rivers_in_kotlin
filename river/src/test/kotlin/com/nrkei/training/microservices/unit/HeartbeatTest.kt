@@ -26,9 +26,9 @@ internal class HeartbeatTest {
             TestService(isAliveResponse = true).also { service ->
                 rapids.register(service)
                 rapids.publish(HeartBeat().toJsonString())
-                assertEquals(2, rapids.allMessages.size)
-                assertEquals(1, service.packetCount) // Heartbeat does get through
-                assertTrue("heart_beat_responder" in rapids.allMessages[1])
+                assertEquals(3, rapids.allMessages.size)
+                assertEquals(0, service.packetCount) // non-system service sees no system packets
+                assertTrue("heart_beat_responder" in rapids.allMessages.last())
             }
         }
     }
@@ -40,9 +40,9 @@ internal class HeartbeatTest {
                 rapids.register(service)
                 rapids.publish(HeartBeat().toJsonString())
                 rapids.allMessages.also { messages ->
-                    assertEquals(2, messages.size)
-                    assertEquals(1, service.packetCount)
-                    messages[1].also { message ->
+                    assertEquals(3, messages.size)
+                    assertEquals(0, service.packetCount) // non-system service sees no system packets
+                    messages.last().also { message ->
                         assertTrue("log_severity" in message)
                         assertTrue("error" in message)
                         println(message)

@@ -27,8 +27,8 @@ internal class InvalidPacketTest {
             rapids.register(TestSystemService(rapids))
             rapids.publish("qwerty")
             rapids.allMessages.also { messages ->
-                assertEquals(2, messages.size)
-                messages[1].also { message ->
+                assertEquals(3, messages.size)
+                messages.last().also { message ->
                     assertTrue("log_severity" in message)
                     assertTrue("error" in message)
                     assertTrue("log_message" in message)
@@ -55,7 +55,7 @@ internal class InvalidPacketTest {
         }
 
         override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
-            infoWarnings.severeError("Unexpected invocation of packet API")
+            // ignore any system packets that come in here
         }
 
         override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
