@@ -38,16 +38,17 @@ class River(
     }
 
     override fun message(sendPort: RapidsConnection, message: String) {
-        PacketProblems(message).also { problems ->
+        Status(message).also { problems ->
             try {
                 Packet(ObjectMapper().readValue<Map<String, Any>>(message)).apply {
                     if (hasInvalidReadCount(maxReadCount)) {
                         this@River.triggerLoopDetection(this, problems)
                         return
                     }
+                    val services = if (this.isSystem()) systemListeners else listeners
                     if (isHeartBeat()) this@River.triggerHeartBeat(this.clone())
-                    if (doesMeetRules(rules, problems)) this@River.triggerPacket(this, problems)
-                    else this@River.triggerRejectedPacket(this, problems)
+                    if (doesMeetRules(rules, problems)) this@River.triggerPacket(services, this, problems)
+                    else this@River.triggerRejectedPacket(services, this, problems)
                 }
             } catch (e: JsonParseException) {
                 problems.error("Invalid JSON format detected")
@@ -56,11 +57,11 @@ class River(
         }
     }
 
-    private fun triggerInvalidPacket(message: String, problems: PacketProblems) {
+    private fun triggerInvalidPacket(message: String, problems: Status) {
         systemListeners.forEach { service -> service.invalidFormat(connection, message, problems) }
     }
 
-    private fun triggerLoopDetection(packet: Packet, problems: PacketProblems) {
+    private fun triggerLoopDetection(packet: Packet, problems: Status) {
         systemListeners.forEach { service -> service.loopDetected(connection, packet, problems) }
     }
 
@@ -76,28 +77,28 @@ class River(
         }
     }
 
-    private fun triggerPacket(packet: Packet, infoWarnings: PacketProblems) {
+    private fun triggerPacket(services: List<PacketListener>, packet: Packet, infoWarnings: Status) {
         @Suppress("UNCHECKED_CAST") val breadcrumbs = (packet[SYSTEM_BREADCRUMBS] as List<String>?) ?: emptyList()
-        listeners.forEach { service ->
+        services.forEach { service ->
             packet[SYSTEM_BREADCRUMBS] = breadcrumbs + service.name
             service.packet(connection, packet, infoWarnings)
         }
     }
 
-    private fun triggerRejectedPacket(packet: Packet, problems: PacketProblems) {
-        listeners.forEach { service -> service.rejectedPacket(connection, packet, problems) }
+    private fun triggerRejectedPacket(services: List<PacketListener>, packet: Packet, problems: Status) {
+        services.forEach { service -> service.rejectedPacket(connection, packet, problems) }
     }
 
     interface PacketListener {
         val name: String get() = "${this.javaClass.simpleName} [${this.hashCode()}]"
         val rules: List<Validation>
         fun isStillAlive(connection: RapidsConnection): Boolean = true // Default if there is nothing specific to verify
-        fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems)
-        fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {} // Optional; for debugging
+        fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status)
+        fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {} // Optional; for debugging
     }
 
     interface SystemListener : PacketListener {
-        fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems)
-        fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems)
+        fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: Status)
+        fun loopDetected(connection: RapidsConnection, packet: Packet, problems: Status)
     }
 }

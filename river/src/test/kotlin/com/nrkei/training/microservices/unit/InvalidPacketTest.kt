@@ -10,7 +10,7 @@ import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.LogPacket
 import com.nrkei.training.microservices.packet.LogPacket.Companion.INVALID_JSON
 import com.nrkei.training.microservices.packet.Packet
-import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.river.Status
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.river.River.SystemListener
 import com.nrkei.training.microservices.util.TestConnection
@@ -25,8 +25,8 @@ internal class InvalidPacketTest {
     fun `invalid JSON`() {
         TestConnection().also { rapids ->
             rapids.register(TestSystemService(rapids))
-            rapids.injectMessage("qwerty")
-            rapids.sentMessages.also { messages ->
+            rapids.publish("qwerty")
+            rapids.allMessages.also { messages ->
                 assertEquals(2, messages.size)
                 messages[1].also { message ->
                     assertTrue("log_severity" in message)
@@ -43,22 +43,22 @@ internal class InvalidPacketTest {
 
         override fun isStillAlive(connection: RapidsConnection) = true
 
-        override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
+        override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: Status) {
             LogPacket.error(INVALID_JSON, name).apply {
                 message(invalidString)
                 rapids.publish(this)
             }
         }
 
-        override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+        override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: Status) {
             problems.severeError("Unexpected invocation of loopDetected API")
         }
 
-        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
             infoWarnings.severeError("Unexpected invocation of packet API")
         }
 
-        override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+        override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
             problems.severeError("Unexpected invocation of rejectedPacket API")
         }
     }

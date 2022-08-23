@@ -10,7 +10,7 @@ import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.rapid.rabbitmq.RabbitMqRapids
-import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.river.Status
 import com.nrkei.training.microservices.river.River.SystemListener
 
 // Understands the messages on an event bus
@@ -30,19 +30,19 @@ class Monitor : SystemListener {
 //        forbid key "b_key"                      // Reject packet if it has key of b_key (unless b-key is null, empty String, or empty Array)
     }
 
-    override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+    override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
         println(String.format(" [*] %s", infoWarnings))
     }
 
-    override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+    override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
         println(String.format(" [x] %s", problems))
     }
 
-    override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
+    override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: Status) {
         println(String.format(" [x] %s", problems))
     }
 
-    override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+    override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: Status) {
         println(String.format(" [x] %s", problems))
     }
 }

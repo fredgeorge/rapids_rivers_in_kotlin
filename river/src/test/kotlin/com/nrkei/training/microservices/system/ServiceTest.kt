@@ -9,7 +9,7 @@ package com.nrkei.training.microservices.system
 import com.nrkei.training.microservices.filter.Validation
 import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.Packet
-import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.river.Status
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.packet.RapidsPacket
 import com.nrkei.training.microservices.river.River
@@ -51,7 +51,7 @@ internal class ServiceTest {
     @Test fun `valid JSON extracted`() {
         connection.register(object: PacketListener {
             override val rules = rules {  }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 println(infoWarnings)
                 assertFalse(infoWarnings.hasErrors())
             }
@@ -62,7 +62,7 @@ internal class ServiceTest {
     @Test fun `invalid JSON format`() {
         var invocationCount = 0
         connection.register(object: TestSystemService() {
-            override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
+            override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: Status) {
                 assertTrue(problems.hasErrors())
                 invocationCount += 1
             }
@@ -75,7 +75,7 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules { require key NEED_KEY }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 assertFalse(infoWarnings.hasErrors())
                 invocationCount += 1
             }
@@ -88,7 +88,7 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules { require key NEED_KEY value "car_rental_offer" }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 assertFalse(infoWarnings.hasErrors())
                 invocationCount += 1
             }
@@ -105,7 +105,7 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules { forbid key "no such key" }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 assertFalse(infoWarnings.hasErrors())
                 invocationCount += 1
             }
@@ -118,10 +118,10 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules { forbid key NEED_KEY }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 fail("Unexpected invocation of packer API\n")
             }
-            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
                 assertTrue(problems.hasErrors())
                 invocationCount += 1
             }
@@ -134,7 +134,7 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules { require key NEED_KEY value "car_rental_offer" }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 packet[NEED_KEY] = "hotel_offer"
                 connection.publish(packet)
                 assertFalse(infoWarnings.hasErrors())
@@ -150,7 +150,7 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules { forbid key KEY_TO_BE_ADDED }
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 packet[KEY_TO_BE_ADDED] = "hotel_offer"
                 connection.publish(packet)
                 assertFalse(infoWarnings.hasErrors())
@@ -178,7 +178,7 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 assertFalse(infoWarnings.hasErrors())
                 invocationCount += 1
             }
@@ -191,10 +191,10 @@ internal class ServiceTest {
         var invocationCount = 0
         connection.register(object: PacketListener {
             override val rules = rules
-            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
                 fail("Unexpected invocation of packer API\n")
             }
-            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+            override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
                 assertTrue(problems.hasErrors())
                 invocationCount += 1
             }
@@ -229,7 +229,7 @@ internal class ServiceTest {
     private open class TestSystemService: SystemListener {
         override val rules = rules {  }
 
-        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
             fail("Unexpected invocation of packer API. Packet is: \n" +
                 packet.toJsonString() +
                 "\nWarnings discovered were:\n" +
@@ -237,7 +237,7 @@ internal class ServiceTest {
             )
         }
 
-        override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: PacketProblems) {
+        override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: Status) {
             fail("Unexpected invocation of invalidFormat API. Message is: \n" +
                     invalidString +
                     "\nProblems discovered were:\n" +
@@ -245,7 +245,7 @@ internal class ServiceTest {
             )
         }
 
-        override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+        override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: Status) {
             fail("Unexpected invocation of loopDetected API. Packet is: \n" +
                     packet.toJsonString() +
                     "\nProblems discovered were:\n" +

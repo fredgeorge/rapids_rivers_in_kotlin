@@ -8,7 +8,7 @@ package com.nrkei.training.microservices.river
 
 // Understands issues that arose when analyzing a JSON message
 // Implements Collecting Parameter in Refactoring by Martin Fowler
-class PacketProblems(private val jsonString: String) {
+class Status(private val jsonString: String) {
     private val informationalMessages = mutableListOf<String>()
     private val warnings = mutableListOf<String>()
     private val errors = mutableListOf<String>()
@@ -52,7 +52,7 @@ class PacketProblems(private val jsonString: String) {
         }
     }
 
-    inner class PacketProblemsException internal constructor(problems: PacketProblems):RuntimeException() {
+    inner class PacketProblemsException internal constructor(problems: Status):RuntimeException() {
         override val message = problems.toString()
     }
 }

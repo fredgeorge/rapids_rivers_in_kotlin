@@ -6,8 +6,8 @@
 
 package com.nrkei.training.microservices.unit
 
-import com.nrkei.training.microservices.river.PacketProblems
-import com.nrkei.training.microservices.river.PacketProblems.PacketProblemsException
+import com.nrkei.training.microservices.river.Status
+import com.nrkei.training.microservices.river.Status.PacketProblemsException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,11 +20,11 @@ internal class PacketProblemsTest {
         private const val VALID_JSON = "{\"key1\":\"value1\"}"
     }
 
-    private lateinit var problems: PacketProblems
+    private lateinit var problems: Status
 
     @BeforeEach
     fun setUp() {
-        problems = PacketProblems(VALID_JSON)
+        problems = Status(VALID_JSON)
     }
 
     @Test

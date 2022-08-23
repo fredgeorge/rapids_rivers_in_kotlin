@@ -9,7 +9,7 @@ package com.nrkei.training.microservices.unit
 import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.HeartBeat
 import com.nrkei.training.microservices.packet.Packet
-import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.river.Status
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.river.River.PacketListener
 import com.nrkei.training.microservices.util.TestConnection
@@ -25,10 +25,10 @@ internal class HeartbeatTest {
         TestConnection().also { rapids ->
             TestService(isAliveResponse = true).also { service ->
                 rapids.register(service)
-                rapids.injectMessage(HeartBeat().toJsonString())
-                assertEquals(2, rapids.sentMessages.size)
+                rapids.publish(HeartBeat().toJsonString())
+                assertEquals(2, rapids.allMessages.size)
                 assertEquals(1, service.packetCount) // Heartbeat does get through
-                assertTrue("heart_beat_responder" in rapids.sentMessages[1])
+                assertTrue("heart_beat_responder" in rapids.allMessages[1])
             }
         }
     }
@@ -38,8 +38,8 @@ internal class HeartbeatTest {
         TestConnection().also { rapids ->
             TestService(isAliveResponse = false).also { service ->
                 rapids.register(service)
-                rapids.injectMessage(HeartBeat().toJsonString())
-                rapids.sentMessages.also { messages ->
+                rapids.publish(HeartBeat().toJsonString())
+                rapids.allMessages.also { messages ->
                     assertEquals(2, messages.size)
                     assertEquals(1, service.packetCount)
                     messages[1].also { message ->
@@ -57,11 +57,11 @@ internal class HeartbeatTest {
         var packetCount = 0
         override val rules = rules { }
         override fun isStillAlive(connection: RapidsConnection) = isAliveResponse
-        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: PacketProblems) {
+        override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
             packetCount += 1
         }
 
-        override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: PacketProblems) {
+        override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
             problems.severeError("Unexpected invocation of rejectedPacket API")
         }
     }

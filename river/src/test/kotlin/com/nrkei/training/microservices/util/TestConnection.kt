@@ -11,25 +11,41 @@ import com.nrkei.training.microservices.packet.RapidsPacket
 import com.nrkei.training.microservices.river.River
 
 // Simulates an event bus
-internal class TestConnection : RapidsConnection {
+internal class TestConnection(private val maxReadCount: Int = 9) : RapidsConnection {
     private val rivers = mutableListOf<RapidsConnection.MessageListener>()
-    val sentMessages = mutableListOf<String>()
+    internal val allMessages = mutableListOf<String>()
+    internal val allPackets = mutableListOf<RapidsPacket>()
+    internal val busMessages = mutableListOf<String>()
 
     override fun register(listener: River.PacketListener) {
-        River(this, listener.rules, 0).also { river ->
+        River(this, listener.rules, maxReadCount).also { river ->
             rivers.add(river)
             river.register(listener) }
     }
 
     override fun register(listener: River.SystemListener) {
-        River(this, listener.rules, 0).also { river ->
+        River(this, listener.rules, maxReadCount).also { river ->
             rivers.add(river)
             river.register(listener) }
     }
 
     override fun publish(packet: RapidsPacket) {
-        sentMessages.add(packet.toJsonString())
+        allPackets.add(packet)
+        publish(packet.toJsonString())
     }
 
-    internal fun injectMessage(content: String) = rivers.forEach { it.message(this, content) }
+    internal fun publish(message: String) {
+        allMessages.add(message)
+        if (busMessages.isNotEmpty()) busMessages.add(message)
+        else {
+            busMessages.add(message)
+            while (busMessages.isNotEmpty()) {
+                busMessages.first().also { nextMessage ->
+                    rivers.forEach { it.message(this, nextMessage) }
+                    busMessages.removeAt(0)
+                }
+            }
+        }
+    }
+
 }

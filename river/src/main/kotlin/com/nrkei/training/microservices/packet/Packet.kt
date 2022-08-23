@@ -8,7 +8,7 @@ package com.nrkei.training.microservices.packet
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nrkei.training.microservices.filter.Validation
-import com.nrkei.training.microservices.river.PacketProblems
+import com.nrkei.training.microservices.river.Status
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -39,7 +39,9 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
     internal fun isHeartBeat() = doesMeetRules(HeartBeat.rules, noProblemTracking)
 
-    internal fun doesMeetRules(rules: List<Validation>, problems: PacketProblems) = rules
+    internal fun isSystem() = PACKET_TYPE_KEY in map.keys && map[PACKET_TYPE_KEY] == SYSTEM_PACKET_TYPE_VALUE
+
+    internal fun doesMeetRules(rules: List<Validation>, problems: Status) = rules
         .map { it.isValid(this, problems) }
         .all { it }
 
@@ -69,5 +71,5 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
     fun subPacket(key: String) = this[key] as Map<String, Any>
 
-    private val noProblemTracking get() = PacketProblems("")
+    private val noProblemTracking get() = Status("")
 }
