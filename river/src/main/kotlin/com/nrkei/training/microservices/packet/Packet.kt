@@ -67,5 +67,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     )
 
+    fun subPacket(key: String) = this[key] as Map<String, Any>
+
     private val noProblemTracking get() = PacketProblems("")
 }

@@ -53,7 +53,8 @@ internal class PacketTest {
 
     @Test
     fun `detail extraction`() {
+        assertEquals("upgrade", packet.subPacket("detail_key")["detail_string_key"])
         assertEquals("upgrade", (packet["detail_key"] as Map<String, Any>)["detail_string_key"])
-        assertEquals(10.75, (packet["detail_key"] as Map<String, Any>)["detail_double_key"])
+        assertEquals(10.75, packet.subPacket("detail_key")["detail_double_key"])
     }
 }
