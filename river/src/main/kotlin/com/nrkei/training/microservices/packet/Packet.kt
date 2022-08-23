@@ -9,6 +9,8 @@ package com.nrkei.training.microservices.packet
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nrkei.training.microservices.filter.Validation
 import com.nrkei.training.microservices.river.PacketProblems
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
     companion object {
@@ -25,7 +27,7 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
         internal const val SYSTEM_BREADCRUMBS = "system_breadcrumbs"
     }
 
-    constructor(vararg pairs: Pair<String, Any>): this(pairs.toMap())
+    constructor(vararg pairs: Pair<String, Any>) : this(pairs.toMap())
 
     private val map = map.toMutableMap()
 
@@ -59,6 +61,11 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
     override fun toString() = map.toString()
 
     fun clone() = Packet(map.toMutableMap())
+
+    fun dateTime(key: String) = LocalDateTime.parse(
+        this[key] as String,
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    )
 
     private val noProblemTracking get() = PacketProblems("")
 }
