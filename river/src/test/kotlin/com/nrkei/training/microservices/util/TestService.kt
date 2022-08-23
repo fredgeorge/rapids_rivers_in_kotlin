@@ -46,3 +46,7 @@ internal class TestSystemService(rules: List<Validation> = emptyList()) : TestSe
         loopPackets.add(packet)
     }
 }
+
+internal class DeadService() : TestService() {
+    override fun isStillAlive(connection: RapidsConnection) = false
+}

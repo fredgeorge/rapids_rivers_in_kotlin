@@ -11,8 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.nrkei.training.microservices.filter.Validation
 import com.nrkei.training.microservices.packet.HeartBeat
-import com.nrkei.training.microservices.packet.LogPacket
-import com.nrkei.training.microservices.packet.LogPacket.Companion.SERVICE_NOT_RESPONDING
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.packet.Packet.Companion.SYSTEM_BREADCRUMBS
 import com.nrkei.training.microservices.packet.StartUpPacket
@@ -70,9 +68,6 @@ class River(
             if(service.isStillAlive(connection)) {
                 packet[HeartBeat.HEART_BEAT_RESPONDER] = service.name
                 connection.publish(packet)
-            }
-            else {
-                connection.publish(LogPacket.error(SERVICE_NOT_RESPONDING, service.name))
             }
         }
     }

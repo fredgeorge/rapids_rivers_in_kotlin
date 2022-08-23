@@ -13,8 +13,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 
-// Ensures that PacketProblems operates correctly
-internal class PacketProblemsTest {
+// Ensures that Status operates correctly
+internal class StatusTest {
 
     companion object {
         private const val VALID_JSON = "{\"key1\":\"value1\"}"

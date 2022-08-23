@@ -7,7 +7,9 @@
 package com.nrkei.training.microservices.unit
 
 import com.nrkei.training.microservices.filter.rules
+import com.nrkei.training.microservices.packet.HeartBeat
 import com.nrkei.training.microservices.packet.Packet
+import com.nrkei.training.microservices.util.DeadService
 import com.nrkei.training.microservices.util.TestConnection
 import com.nrkei.training.microservices.util.TestService
 import com.nrkei.training.microservices.util.TestSystemService
@@ -31,7 +33,7 @@ internal class RiverTest {
         )
     }
 
-    private val connection = TestConnection(2)
+    private val connection = TestConnection(20)
 
     @Test
     fun `unfiltered service`() {
@@ -70,6 +72,29 @@ internal class RiverTest {
         assertSize(0, systemService.informationStatuses)
         assertSize(0, systemService.problemStatuses)  // Not treated as packet problem; rather different API
         assertSize(1, systemService.formatProblems)  // Special handling here
+    }
+
+    @Test
+    fun `start up`() {
+        connection.register(TestService())
+        assertSize(1, connection.allPackets)
+    }
+
+    @Test
+    fun `heart beats`() {
+        val normalService = TestService()
+        val deadService = DeadService()
+        val systemService = TestSystemService()
+        connection.register(normalService)
+        connection.register(deadService)
+        connection.register(systemService)
+        val heartbeat = HeartBeat()
+        connection.publish(heartbeat)
+        assertSize(1 + 2, systemService.acceptedPackets)  // one heart beat and 2 responses
+        connection.publish(heartbeat)
+        connection.publish(heartbeat)
+        assertSize(3 + 6, systemService.acceptedPackets)  // one heart beat and 2 responses
+
     }
 
     private fun assertSize(expectedSize: Int, results: List<*>) {
