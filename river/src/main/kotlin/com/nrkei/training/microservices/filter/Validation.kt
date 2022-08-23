@@ -17,20 +17,20 @@ internal class KeyValueValidation(private val key: String, private val value: An
     override fun isValid(packet: Packet, problems: PacketProblems) = (packet[key] == value).also { isValid ->
         if (isValid) return@also
         problems.error(
-            if(packet.isMissing(key)) "Key '$key' is missing"
+            if(packet.isLacking(key)) "Key '$key' is missing"
             else "Key '$key' has value '${packet[key]} rather than expected '$value'"
         )
     }
 }
 
 internal class KeyExistanceValidation(private val key: String): Validation {
-    override fun isValid(packet: Packet, problems: PacketProblems) = (!packet.isMissing(key)).also { isValid ->
+    override fun isValid(packet: Packet, problems: PacketProblems) = (!packet.isLacking(key)).also { isValid ->
         if (!isValid) problems.error("Key '$key' is missing")
     }
 }
 
 internal class KeyAbsenseValidation(private val key: String): Validation {
-    override fun isValid(packet: Packet, problems: PacketProblems) = packet.isMissing(key).also { isValid ->
+    override fun isValid(packet: Packet, problems: PacketProblems) = packet.isLacking(key).also { isValid ->
         if (!isValid) problems.error("Key '$key' exists (unexpectedly?)")
     }
 }

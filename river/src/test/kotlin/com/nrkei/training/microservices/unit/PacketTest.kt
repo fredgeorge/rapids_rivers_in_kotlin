@@ -43,4 +43,17 @@ internal class PacketTest {
         assertEquals(listOf("foo", "bar"), packet["string_list_key"])
         assertEquals(listOf(2, 4), packet["integer_list_key"])
     }
+
+    @Test
+    fun `is missing`() {
+        assertTrue(packet.isLacking("foo"))
+        assertTrue(packet.isLacking("empty_string"))
+        assertTrue(packet.isLacking("empty_list_key"))
+    }
+
+    @Test
+    fun `detail extraction`() {
+        assertEquals("upgrade", (packet["detail_key"] as Map<String, Any>)["detail_string_key"])
+        assertEquals(10.75, (packet["detail_key"] as Map<String, Any>)["detail_double_key"])
+    }
 }
