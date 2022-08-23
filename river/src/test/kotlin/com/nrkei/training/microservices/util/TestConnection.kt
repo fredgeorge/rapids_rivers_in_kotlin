@@ -19,14 +19,16 @@ internal class TestConnection(private val maxReadCount: Int = 9) : RapidsConnect
 
     override fun register(listener: River.PacketListener) {
         River(this, listener.rules, maxReadCount).also { river ->
+            river.register(listener)
             rivers.add(river)
-            river.register(listener) }
+        }
     }
 
     override fun register(listener: River.SystemListener) {
         River(this, listener.rules, maxReadCount).also { river ->
+            river.register(listener)
             rivers.add(river)
-            river.register(listener) }
+        }
     }
 
     override fun publish(packet: RapidsPacket) {

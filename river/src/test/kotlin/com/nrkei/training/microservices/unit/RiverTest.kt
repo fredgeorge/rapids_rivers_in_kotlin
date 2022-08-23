@@ -10,6 +10,7 @@ import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.util.TestConnection
 import com.nrkei.training.microservices.util.TestService
+import com.nrkei.training.microservices.util.TestSystemService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -34,7 +35,7 @@ internal class RiverTest {
 
     @Test
     fun `unfiltered service`() {
-        TestService(emptyList()).also { service ->
+        TestService().also { service ->
             connection.register(service)
             connection.publish(packet)
             assertSize(1, service.acceptedPackets)
@@ -57,8 +58,21 @@ internal class RiverTest {
         assertTrue(rejectedService.problemStatuses.first().hasErrors())
     }
 
+    @Test
+    fun `invalid JSON`() {
+        val normalService = TestService()
+        val systemService = TestSystemService()
+        connection.register(normalService)
+        connection.register(systemService)
+        connection.publish("{")
+        assertSize(0, normalService.informationStatuses)
+        assertSize(0, normalService.problemStatuses)  // Not processed
+        assertSize(0, systemService.informationStatuses)
+        assertSize(0, systemService.problemStatuses)  // Not treated as packet problem; rather different API
+        assertSize(1, systemService.formatProblems)  // Special handling here
+    }
+
     private fun assertSize(expectedSize: Int, results: List<*>) {
         assertEquals(expectedSize, results.size)
     }
-
 }
