@@ -97,6 +97,30 @@ internal class RiverTest {
 
     }
 
+    @Test
+    fun `loop detection`() {
+        TestConnection(2).also { connection -> // a very strict connection
+            TestSystemService().also { service ->
+                connection.register(service)
+                Packet().also { packet ->
+                    connection.publish(packet)
+                    assertSize(1, service.acceptedPackets)
+                    assertSize(0, service.loopPackets)
+
+                    packet.set("system_read_count", 1)
+                    connection.publish(packet)
+                    assertSize(2, service.acceptedPackets)
+                    assertSize(0, service.loopPackets)
+
+                    packet.set("system_read_count", 2)  // threshold is 2; count is incremented, then checked
+                    connection.publish(packet)
+                    assertSize(2, service.acceptedPackets) // packet never makes it to the service
+                    assertSize(1, service.loopPackets)
+                }
+            }
+        }
+    }
+
     private fun assertSize(expectedSize: Int, results: List<*>) {
         assertEquals(expectedSize, results.size)
     }
