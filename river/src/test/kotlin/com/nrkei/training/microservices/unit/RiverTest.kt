@@ -9,10 +9,7 @@ package com.nrkei.training.microservices.unit
 import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.HeartBeat
 import com.nrkei.training.microservices.packet.Packet
-import com.nrkei.training.microservices.util.DeadService
-import com.nrkei.training.microservices.util.TestConnection
-import com.nrkei.training.microservices.util.TestService
-import com.nrkei.training.microservices.util.TestSystemService
+import com.nrkei.training.microservices.util.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -119,6 +116,21 @@ internal class RiverTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `bread crumbs`() {
+        val serviceA = LinkedService(emptyList(), listOf("a", "b", "c"))
+        val serviceB = LinkedService(listOf("a"), listOf("b", "c"))
+        val serviceC = LinkedService(listOf("a", "b"), listOf("c"))
+        val serviceD = LinkedService(listOf("a", "b", "c"), emptyList())
+        connection.register(serviceA)
+        connection.register(serviceB)
+        connection.register(serviceC)
+        connection.register(serviceD)
+        connection.publish(Packet())
+        assertSize(1, serviceD.acceptedPackets)
+        assertSize(4, serviceD.acceptedPackets.first()["system_breadcrumbs"] as List<*>)
     }
 
     private fun assertSize(expectedSize: Int, results: List<*>) {
