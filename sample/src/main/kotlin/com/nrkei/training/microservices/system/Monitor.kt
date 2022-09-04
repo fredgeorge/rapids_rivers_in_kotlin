@@ -31,6 +31,15 @@ class Monitor : SystemListener {
     }
 
     override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
+//        Sample possible Packet methods and purposes:
+//
+//        packet["key"]             // returns any? for any defined key
+//        packet.get("key")         // synonym for packet["key"]
+//        packet.isLacking("key")   // returns true if the key is missing, a null value, an empty string, or an empty array
+//        packet.dateTime("key")    // returns a DateTime object (converting JSON string representation)
+//        packet["key"] = value     // sets the key/value pair into the Packet
+//        packet.set("key", value)  // synonym for packet["key"] = value
+//
         println(String.format(" [*] %s", infoWarnings))
     }
 
