@@ -19,7 +19,7 @@ several times, including NAV (Norwegian Welfare Association) in 2019 and Orn Sof
 
 This project is built with:
 
-- IntelliJ IDEA 2022.1.3 (Ultimate Edition)
+- IntelliJ IDEA 2022.1.4 (Ultimate Edition)
 - Java 18.0.2 Oracle
 - Kotlin 1.7.10
 - JUnit 5.8.2
