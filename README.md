@@ -1,7 +1,7 @@
 # rapids_rivers_in_kotlin.
 
-Copyright (c) 2022 by Fred George 
-@author Fred George  fredgeorge@acm.org
+Copyright (c) 2022 by Fred George  
+@author Fred George  fredgeorge@acm.org  
 Licensed under the MIT License; see LICENSE file in root.
 
 A Kotlin implementation of Rapids/Rivers framework using RabbitMQ for the event bus
@@ -13,7 +13,8 @@ It strives to present a relatively simple choreography scheme to allow tiny Micr
 to interact with minimal coupling.
 
 Originally formulated for a workshop conference in Bergen, Norway, and it has been re-implemented
-several times, including NAV (Norwegian Welfare Association) in 2019 and Orn Software in 2022 (in C#).
+several times, including at NAV (Norwegian Welfare Association) in 2019 where it is now being used
+extensively in the organization, and at Orn Software in 2022 (in C#).
 
 ## Dependencies
 
