@@ -27,25 +27,51 @@ This project is built with:
 - Gradle 7.5
 - and other libraries for JSON and RabbitMQ (see build.gradle.kts)
 
-So open up the project, and let the dependencies resolve themselves. Execute the tests
-to ensure everything is working correctly.
+So open up the project, and let the dependencies resolve themselves. 
+You can execute the tests to ensure everything is working correctly
+if you are uncertain.
 
 Now you are ready to run the sample MicroServices.
 
-## Execution
+## Basic Concepts
 
-For any event bus, an implementation of the RapidsConnection interface is required.
-A RabbitMQ implementation is included, using RabbitMQ in a pub/sub mode.
+An event bus acts as a __rapids__, an undifferentiated
+stream of all messages. Access to the rapids is through an adapter;
+for RabbitMQ, the adapter is the RabbitMqRapidsConnection.
 
-To run the sample MicroServices, bring up a RabbitMQ implementation, either natively 
-or in a Docker container. Or share an existing instance running somewhere else. 
-RabbitMQ with the Management console option is recommended so you can view status
-and statistics on the event bus.
+Messages on the event bus are captured into __packets__. In Kotlin
+and Java, you can inspect the received fields through the APIs
+of Packet. You can also create new packets, and add properties to them
+that will be rendered into JSON automatically on publishing to the rapids.
 
-Then start up the Monitor service by passing the IP address and the RabbitMQ 
-port (usually 5672) as _strings_ as input parameters. You should see a simple prompt.
+Using a set of __rules__, a subset of the rapids is created as a __river__.
+Services are attached to a river, and will receive only packets that
+conform to the rules.
 
-Next, start up the RentalNeed service with the same parameters. It should generate
-traffic that the Monitor shows on the event bus.
+## Sample Services
 
-Now you are ready to start developing your own services.
+Two Kotlin sample services are provided:
+
+- __Need__ _in Kotlin_: service generates a stream of messages on the event bus
+    - Examine this code for how to create and send a Packet
+- __Monitor__ _in Kotlin_: service logs to the console all messages on the bus
+    - Examine this code for how to attach to the __rapids__ via a __river__
+    - Also note the comments for how to set up __rules__ for the __packets__ you want to process
+
+Two corresponding Java sample services (JMonitor and JNeed) are 
+also provided with the same purposes as the Kotlin versions.
+
+## Running Sample Services
+
+Bring up an instance of RabbitMQ, preferably with the management addition to
+allow browser inspection of what is happening.
+
+Run the Monitor service. Be sure to add the startup parameters identifying 
+the RabbitMQ IP address (localhost if running locally) and port number 
+(default is 5672). You should see a console log announcing its start.
+
+Next, run the Need service. Again, IP and port are required parameters. 
+Need should generate a message very five seconds. Monitor should show 
+this message.
+
+If this is all working, you are ready to write your own, new services!

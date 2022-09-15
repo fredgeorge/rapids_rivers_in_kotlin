@@ -6,8 +6,8 @@
 
 package com.nrkei.training.microservices.util
 
-import com.nrkei.training.microservices.filter.KeyAbsenseValidation
-import com.nrkei.training.microservices.filter.KeyExistanceValidation
+import com.nrkei.training.microservices.filter.KeyAbsenceValidation
+import com.nrkei.training.microservices.filter.KeyExistenceValidation
 import com.nrkei.training.microservices.filter.Validation
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.packet.RapidsPacket
@@ -54,7 +54,7 @@ internal class DeadService() : TestService() {
 }
 
 internal class LinkedService(requiredKeys: List<String>, private val forbiddenKeys: List<String>) :
-    TestService(requiredKeys.map { KeyExistanceValidation(it) } + forbiddenKeys.map { KeyAbsenseValidation(it) }) {
+    TestService(requiredKeys.map { KeyExistenceValidation(it) } + forbiddenKeys.map { KeyAbsenceValidation(it) }) {
 
     override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
         if (forbiddenKeys.isNotEmpty()) {

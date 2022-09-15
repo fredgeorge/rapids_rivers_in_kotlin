@@ -13,7 +13,7 @@ interface Validation {
     fun isValid(packet: Packet, problems: Status): Boolean
 }
 
-internal class KeyValueValidation(private val key: String, private val value: Any): Validation {
+class KeyValueValidation(private val key: String, private val value: Any): Validation {
     override fun isValid(packet: Packet, problems: Status) = (packet[key] == value).also { isValid ->
         if (isValid) return@also
         problems.error(
@@ -23,13 +23,13 @@ internal class KeyValueValidation(private val key: String, private val value: An
     }
 }
 
-internal class KeyExistanceValidation(private val key: String): Validation {
+class KeyExistenceValidation(private val key: String): Validation {
     override fun isValid(packet: Packet, problems: Status) = (!packet.isLacking(key)).also { isValid ->
         if (!isValid) problems.error("Key '$key' is missing")
     }
 }
 
-internal class KeyAbsenseValidation(private val key: String): Validation {
+class KeyAbsenceValidation(private val key: String): Validation {
     override fun isValid(packet: Packet, problems: Status) = packet.isLacking(key).also { isValid ->
         if (!isValid) problems.error("Key '$key' exists (unexpectedly?)")
     }

@@ -19,7 +19,7 @@ class ValidationsBuilder internal constructor() {
         private lateinit var key: String
 
         infix fun key(key: String) = this.also {
-            results.add(KeyExistanceValidation(key))
+            results.add(KeyExistenceValidation(key))
             this.key = key
         }
 
@@ -30,6 +30,6 @@ class ValidationsBuilder internal constructor() {
     }
 
     inner class ForbiddenKeyBuilder() {
-        infix fun key(key: String) { results.add(KeyAbsenseValidation(key)) }
+        infix fun key(key: String) { results.add(KeyAbsenceValidation(key)) }
     }
 }
