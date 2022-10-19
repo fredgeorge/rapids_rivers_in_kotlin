@@ -26,7 +26,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20")
 
     // Need Jackson for JSON support
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.13.2")
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.13.4")
 
     // RabbitMQ client
     implementation("com.rabbitmq:amqp-client:5.16.0")
