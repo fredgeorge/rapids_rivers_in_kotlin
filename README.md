@@ -22,9 +22,9 @@ This project is built with:
 
 - IntelliJ IDEA 2022.1.4 (Ultimate Edition)
 - Java 18.0.2 Oracle
-- Kotlin 1.7.10
-- JUnit 5.8.2
-- Gradle 7.5
+- Kotlin 1.7.20
+- JUnit 5.9.0
+- Gradle 7.5.1
 - and other libraries for JSON and RabbitMQ (see build.gradle.kts)
 
 So open up the project, and let the dependencies resolve themselves. 
