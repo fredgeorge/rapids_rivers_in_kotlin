@@ -32,8 +32,6 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
     }
     private lateinit var channel: Channel
     private lateinit var connection: Connection
-    private lateinit var queueName: String
-    private val rivers = mutableListOf<RapidsConnection.MessageListener>()
 
     override fun register(listener: PacketListener) {
         river(listener) register listener
@@ -60,13 +58,14 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
 
     private fun river(listener: PacketListener) =
         River(this, listener.rules, DEFAULT_MAXIMUM_READ_COUNT).also { river ->
-            queueName = listener.toQueueName()
-            configureQueue()
-            println(" [*] Waiting for messages for ${listener.name}. To exit press CTRL+C")
-            consumeMessages(consumer(channel, river))
+            listener.toQueueName().also { queueName ->
+                configureQueue(queueName)
+                println(" [*] Waiting for messages for ${listener.name}. To exit press CTRL+C")
+                consumeMessages(consumer(channel, river), queueName)
+            }
         }
 
-    private fun consumeMessages(consumer: Consumer): String? {
+    private fun consumeMessages(consumer: Consumer, queueName: String): String? {
         return try {
             channel.basicConsume(queueName, true, consumer)
         } catch (e: IOException) {
@@ -90,13 +89,13 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
         }
     }
 
-    private fun configureQueue() {
+    private fun configureQueue(queueName: String) {
         connectIfNecessary()
-        declareQueue()
-        bindQueueToExchange()
+        declareQueue(queueName)
+        bindQueueToExchange(queueName)
     }
 
-    private fun declareQueue(): AMQP.Queue.DeclareOk? {
+    private fun declareQueue(queueName: String): AMQP.Queue.DeclareOk? {
         return try {
             // Configured for non-durable, auto-delete, and exclusive
             channel.queueDeclare(queueName, false, true, true, HashMap())
@@ -107,7 +106,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
         }
     }
 
-    private fun bindQueueToExchange() {
+    private fun bindQueueToExchange(queueName: String) {
         try {
             channel.queueBind(queueName, EXCHANGE_NAME, "")
         } catch (e: IOException) {
