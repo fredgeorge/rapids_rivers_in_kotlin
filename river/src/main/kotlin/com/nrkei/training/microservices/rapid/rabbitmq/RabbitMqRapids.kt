@@ -14,7 +14,6 @@ import com.rabbitmq.client.*
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
-import java.util.*
 
 class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCloseable {
     companion object {
@@ -38,10 +37,12 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
 
     override fun register(listener: PacketListener) {
         river(listener) register listener
+        Thread.sleep(100)
     }
 
     override fun register(listener: River.SystemListener) {
         river(listener) register listener
+        Thread.sleep(100)
     }
 
     override fun publish(packet: RapidsPacket) {
@@ -59,11 +60,10 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
 
     private fun river(listener: PacketListener) =
         River(this, listener.rules, DEFAULT_MAXIMUM_READ_COUNT).also { river ->
-            rivers.add(river)
             queueName = listener.toQueueName()
             configureQueue()
             println(" [*] Waiting for messages for ${listener.name}. To exit press CTRL+C")
-            consumeMessages(consumer(channel))
+            consumeMessages(consumer(channel, river))
         }
 
     private fun consumeMessages(consumer: Consumer): String? {
@@ -75,7 +75,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
         }
     }
 
-    private fun consumer(channel: Channel): DefaultConsumer {
+    private fun consumer(channel: Channel, river: River): DefaultConsumer {
         val sendPort: RapidsConnection = this
         return object : DefaultConsumer(channel) {
             override fun handleDelivery(
@@ -84,7 +84,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
             ) {
                 String(body, Charset.forName("UTF-8")).also { message ->
 //                    System.out.println(" [>] Received '" + message + "'")
-                    rivers.forEach { it.message(sendPort, message) }
+                    river.message(sendPort, message)
                 }
             }
         }
@@ -101,6 +101,7 @@ class RabbitMqRapids(ipAddress: String, port: String) : RapidsConnection, AutoCl
             // Configured for non-durable, auto-delete, and exclusive
             channel.queueDeclare(queueName, false, true, true, HashMap())
         } catch (e: IOException) {
+            println(" [X] Error creating queue $queueName")
             e.printStackTrace()
             throw RuntimeException("IOException declaring Queue", e)
         }
