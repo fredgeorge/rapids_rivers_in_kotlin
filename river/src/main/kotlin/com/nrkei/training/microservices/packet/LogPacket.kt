@@ -42,13 +42,13 @@ class LogPacket private constructor() : RapidsPacket {
 
         private fun logPacket(severity: String, cause: String, source: String, keyValues: List<Pair<String, Any>>) =
             LogPacket().apply {
+                keyValues.forEach { map[it.first] = it.second }
                 map[COMMUNITY_KEY] = SYSTEM_COMMUNITY_VALUE
                 map[PACKET_TYPE_KEY] = SYSTEM_PACKET_TYPE_VALUE
                 map[SYSTEM_PURPOSE] = LOG_PURPOSE
                 map[LOG_SEVERITY] = severity
                 map[LOG_CAUSE] = cause
                 map[LOG_SOURCE] = source
-                keyValues.forEach { map[it.first] = it.second }
             }
     }
 

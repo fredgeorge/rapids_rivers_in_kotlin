@@ -71,5 +71,8 @@ class Packet internal constructor(map: Map<String, Any>) : RapidsPacket {
 
     fun subPacket(key: String) = this[key] as Map<String, Any>
 
+    fun beError(cause: String, source: String) =
+        LogPacket.error(cause, source, *map.map{(key, value) -> key to value}.toTypedArray())
+
     private val noProblemTracking get() = Status("")
 }
