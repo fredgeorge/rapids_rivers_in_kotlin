@@ -20,7 +20,7 @@ public class JMonitor implements SystemListener {
     @NotNull
     @Override
     public String getName() {
-        return "${this.javaClass.simpleName} [${this.hashCode()}]";
+        return "%s[%d]".formatted(getClass().getSimpleName(), hashCode());
     }
 
 
