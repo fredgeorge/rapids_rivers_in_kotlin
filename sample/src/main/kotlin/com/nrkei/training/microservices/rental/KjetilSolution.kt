@@ -7,12 +7,8 @@ import com.nrkei.training.microservices.rapid.rabbitmq.RabbitMqRapids
 import com.nrkei.training.microservices.river.River
 import com.nrkei.training.microservices.river.Status
 
-class Solution {
+class KjetilSolution {
     companion object {
-        private const val COMMUNITY = "community"
-        private const val OFFER_ENGINE_FAMILY = "offer_engine_family"
-        private const val NEED = "need"
-        private const val CAR_RENTAL_OFFER = "car_rental_offer"
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -26,18 +22,28 @@ class Solution {
             try {
                 rapidsConnection.register(object : River.PacketListener {
                     override val rules = rules {
-                        require key COMMUNITY value OFFER_ENGINE_FAMILY
-                        require key NEED value CAR_RENTAL_OFFER
+                        require key Messages.Key.COMMUNITY value Messages.Value.OFFER_ENGINE_FAMILY
+                        require key Messages.Key.NEED value Messages.Value.CAR_RENTAL_OFFER
                     }
 
                     override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
+                        Packet(
+                            Messages.Key.COMMUNITY to Messages.Value.OFFER_ENGINE_FAMILY,
+                            Messages.Key.CAR_RENTAL_OFFER_MESSAGE to "Got a car for you " + packet["programmer"],
+                            Messages.Key.CAR_RENTAL_OFFER to "SUX 5000",
+                            Messages.Key.DAILY_RATE to "1000",
+                            Messages.Key.LOCATION to "Arbins"
+                        )
                         rapidsConnection.publish(
                             Packet(
-                                COMMUNITY to OFFER_ENGINE_FAMILY,
-                                "solution" to "Got a car for you " + packet["programmer"],
-                                "car" to "SUX 5000"
+                                Messages.Key.COMMUNITY to Messages.Value.OFFER_ENGINE_FAMILY,
+                                Messages.Key.CAR_RENTAL_OFFER_MESSAGE to "Got a car for you " + packet["programmer"],
+                                Messages.Key.CAR_RENTAL_OFFER to "SUX 5000",
+                                Messages.Key.DAILY_RATE to "1000",
+                                Messages.Key.LOCATION to "Arbins"
                             )
                         )
+                        println("Offered a car to ${packet["programmer"]}: $packet")
                     }
                 })
             } catch (e: Exception) {
@@ -45,5 +51,4 @@ class Solution {
             }
         }
     }
-
 }

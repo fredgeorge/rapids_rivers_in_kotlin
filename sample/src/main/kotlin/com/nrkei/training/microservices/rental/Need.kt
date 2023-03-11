@@ -30,9 +30,9 @@ class Need {
         private fun publish(rapidsConnection: RapidsConnection) {
             try {
                 Packet(
-                    COMMUNITY to OFFER_ENGINE_FAMILY,
-                    NEED to CAR_RENTAL_OFFER,
-                    "programmer" to "kjetil"
+                    Messages.Key.COMMUNITY to Messages.Value.OFFER_ENGINE_FAMILY,
+                    Messages.Key.NEED to Messages.Value.CAR_RENTAL_OFFER,
+                    Messages.Key.USER to "kjetil"
                 ).also { needPacket ->
                     while (true) {
                         println(String.format(" [<] %s", needPacket))
