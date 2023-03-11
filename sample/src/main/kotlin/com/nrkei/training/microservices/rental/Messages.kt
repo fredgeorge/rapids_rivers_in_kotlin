@@ -10,6 +10,7 @@ object Messages {
         const val CAR_RENTAL_OFFER = "car_rental_offer";
         const val CAR_RENTAL_OFFER_MESSAGE = "car_rental_offer_message";
         const val DAILY_RATE = "daily_rate"
+        const val PROBABILITY = "probability"
         const val LOCATION = "location"
     }
 
