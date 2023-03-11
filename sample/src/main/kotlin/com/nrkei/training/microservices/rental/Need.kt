@@ -27,7 +27,7 @@ class Need {
                 Packet(
                     Messages.Key.COMMUNITY to Messages.Value.OFFER_ENGINE_FAMILY,
                     Messages.Key.NEED to Messages.Value.CAR_RENTAL_OFFER,
-                    Messages.Key.USER to "God"
+                    Messages.Key.USER to System.getProperty("user.name", "God")
                 ).also { needPacket ->
                     while (true) {
                         println(String.format(" [<] %s", needPacket))

@@ -22,17 +22,18 @@ class GodOffer  : River.PacketListener {
         get() = rules {
             require key Messages.Key.NEED value Messages.Value.CAR_RENTAL_OFFER
             forbid key Messages.Key.PROBABILITY
+            forbid key Messages.Key.BEST_OFFER
         }
 
     override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
         val answer = packet.clone()
-        answer[Messages.Key.MESSAGE ] = "Got a car for you, " + packet["programmer"]
+        answer[Messages.Key.MESSAGE ] = "Got a car for you, " + packet["user"]
         answer[Messages.Key.CAR] = "Delorean"
         answer[Messages.Key.DAILY_RATE] = Random.nextInt(100,2000)
         answer[Messages.Key.PROBABILITY]= Random.nextInt(0,100)
 
         connection.publish(answer)
-        println("Offered car to " + packet["programmer"])
+        println("Offered car to " + packet["user"])
 
     }
 

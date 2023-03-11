@@ -23,13 +23,32 @@ class GodSolutionPicker : River.PacketListener {
             require key Messages.Key.DAILY_RATE
             require key Messages.Key.USER
             require key Messages.Key.CAR
+            forbid key Messages.Key.BEST_OFFER
         }
 
+    val bestOffersPerUser = mutableMapOf<String, Packet>()
+
     override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
-        val user = packet[Messages.Key.USER]
+        val user = "${packet[Messages.Key.USER]}"
         val car  = packet[Messages.Key.CAR]
         val probability  = packet[Messages.Key.PROBABILITY].toString().toInt()
-        var rate  = packet[Messages.Key.DAILY_RATE].toString().toInt()
-        println("=== Solution picker=> "+packet)
+        val rate  = packet[Messages.Key.DAILY_RATE].toString().toInt()
+
+        val previous = bestOffersPerUser.get(user)
+        var best = previous ?: packet
+        if ( previous != null ) {
+            if ( calc(packet[Messages.Key.PROBABILITY].toString().toInt(), packet[Messages.Key.DAILY_RATE].toString().toInt()) < calc( probability, rate)) {
+                best = packet
+            }
+        }
+        bestOffersPerUser.put(user, best)
+
+        println("=== Best solution => "+best)
+        best[Messages.Key.BEST_OFFER] = "true"
+        connection.publish( best )
+    }
+
+    private fun calc(probability : Int, rate : Int ): Int {
+        return probability * rate
     }
 }

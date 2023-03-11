@@ -4,6 +4,7 @@ object Messages {
 
     object Key {
 
+        const val BEST_OFFER = "best"
         const val COMMUNITY = "community"
         const val NEED = "need"
         const val USER = "user"
