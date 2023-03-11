@@ -7,6 +7,8 @@ object Messages {
         const val COMMUNITY = "community"
         const val NEED = "need"
         const val USER = "user"
+        const val MESSAGE = "message"
+        const val CAR = "car"
         const val CAR_RENTAL_OFFER = "car_rental_offer";
         const val CAR_RENTAL_OFFER_MESSAGE = "car_rental_offer_message";
         const val DAILY_RATE = "daily_rate"
