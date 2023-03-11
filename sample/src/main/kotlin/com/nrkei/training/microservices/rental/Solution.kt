@@ -1,18 +1,14 @@
-/*
- * Copyright (c) 2022 by Fred George
- * @author Fred George  fredgeorge@acm.org
- * Licensed under the MIT License; see LICENSE file in root.
- */
-
 package com.nrkei.training.microservices.rental
 
+import com.nrkei.training.microservices.filter.Validation
+import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.rapid.rabbitmq.RabbitMqRapids
+import com.nrkei.training.microservices.river.River
+import com.nrkei.training.microservices.river.Status
 
-// Understands the requirement for advertising on a site
-class Need {
-
+class Solution {
     companion object {
         private const val COMMUNITY = "community"
         private const val OFFER_ENGINE_FAMILY = "offer_engine_family"
@@ -36,7 +32,19 @@ class Need {
                 ).also { needPacket ->
                     while (true) {
                         println(String.format(" [<] %s", needPacket))
-                        rapidsConnection.publish(needPacket)
+                        rapidsConnection.register(object : River.PacketListener {
+                            override val rules = rules {
+                                require key COMMUNITY value OFFER_ENGINE_FAMILY
+                                require key NEED value CAR_RENTAL_OFFER
+                            }
+                            override fun packet(connection: RapidsConnection, packet: Packet, infoWarnings: Status) {
+                                rapidsConnection.publish(Packet(
+                                    COMMUNITY to OFFER_ENGINE_FAMILY,
+                                    "solution" to "Got a car for you " + packet["programmer"],
+                                    "car" to "SUX 5000"
+                                ))
+                            }
+                        })
                         Thread.sleep(5000)
                     }
                 }
@@ -45,4 +53,5 @@ class Need {
             }
         }
     }
+
 }
