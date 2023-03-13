@@ -10,13 +10,13 @@ import com.nrkei.training.microservices.filter.Validation;
 import com.nrkei.training.microservices.packet.Packet;
 import com.nrkei.training.microservices.rapid.RapidsConnection;
 import com.nrkei.training.microservices.rapid.rabbitmq.RabbitMqRapids;
-import com.nrkei.training.microservices.river.River.SystemListener;
+import com.nrkei.training.microservices.river.River.PacketListener;
 import com.nrkei.training.microservices.river.Status;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class JMonitor implements SystemListener {
+public class JMonitor implements PacketListener {
     @NotNull
     @Override
     public String getName() {
@@ -53,16 +53,6 @@ public class JMonitor implements SystemListener {
     @Override
     public void rejectedPacket(@NotNull RapidsConnection connection, @NotNull Packet packet, @NotNull Status problems) {
         System.out.printf(" [x] %s\n", problems);
-    }
-
-    @Override
-    public void invalidFormat(@NotNull RapidsConnection connection, @NotNull String invalidString, @NotNull Status problems) {
-        System.out.printf(" [x] Invalid JSON: %s\n", invalidString);
-    }
-
-    @Override
-    public void loopDetected(@NotNull RapidsConnection connection, @NotNull Packet packet, @NotNull Status problems) {
-        System.out.printf(" [x] Loop detected! Packet is: %s", packet.toJsonString());
     }
 
     @Override

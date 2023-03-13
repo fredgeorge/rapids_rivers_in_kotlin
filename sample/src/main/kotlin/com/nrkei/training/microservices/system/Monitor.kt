@@ -10,11 +10,11 @@ import com.nrkei.training.microservices.filter.rules
 import com.nrkei.training.microservices.packet.Packet
 import com.nrkei.training.microservices.rapid.RapidsConnection
 import com.nrkei.training.microservices.rapid.rabbitmq.RabbitMqRapids
+import com.nrkei.training.microservices.river.River.PacketListener
 import com.nrkei.training.microservices.river.Status
-import com.nrkei.training.microservices.river.River.SystemListener
 
 // Understands the messages on an event bus
-class Monitor : SystemListener {
+class Monitor : PacketListener {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
@@ -44,14 +44,6 @@ class Monitor : SystemListener {
     }
 
     override fun rejectedPacket(connection: RapidsConnection, packet: Packet, problems: Status) {
-        println(String.format(" [x] %s", problems))
-    }
-
-    override fun invalidFormat(connection: RapidsConnection, invalidString: String, problems: Status) {
-        println(String.format(" [x] %s", problems))
-    }
-
-    override fun loopDetected(connection: RapidsConnection, packet: Packet, problems: Status) {
         println(String.format(" [x] %s", problems))
     }
 }
