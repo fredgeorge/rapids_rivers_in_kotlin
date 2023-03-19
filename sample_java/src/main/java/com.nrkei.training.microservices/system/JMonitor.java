@@ -20,9 +20,8 @@ public class JMonitor implements PacketListener {
     @NotNull
     @Override
     public String getName() {
-        return "${this.javaClass.simpleName} [${this.hashCode()}]";
+        return this.getClass().getSimpleName() + " [" + this.hashCode() + "]";
     }
-
 
     public static void main(String[] args) {
         String host = args[0];
