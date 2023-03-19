@@ -37,10 +37,10 @@ public class JMonitor implements PacketListener {
 //                new KeyValueValidation("key1", "value1"), // Reject packet unless key1 has value1
 //                new KeyValueValidation("key2", 42.7),   // Reject packet unless key2 has value 42.7
 //                new KeyValueValidation("key3", true),   // Reject packet unless key3 has value true
-//                new KeyExistanceValidation("key4"),   // Reject packet if key4 does not exist
-//                new KeyExistanceValidation("key5"),   // Reject packet if key5 does not exist
-//                new KeyAbsenseValidation("key6"),     // Reject packet if key6 exists; key6 = null, key6 = "", or key6 = [] all considered "missing"
-//                new KeyAbsenseValidation("key7")     // Reject packet if key7 exists
+//                new KeyExistenceValidation("key4"),   // Reject packet if key4 does not exist
+//                new KeyExistenceValidation("key5"),   // Reject packet if key5 does not exist
+//                new KeyAbsenceValidation("key6"),     // Reject packet if key6 exists; key6 = null, key6 = "", or key6 = [] all considered "missing"
+//                new KeyAbsenceValidation("key7")     // Reject packet if key7 exists
         );
     }
 
