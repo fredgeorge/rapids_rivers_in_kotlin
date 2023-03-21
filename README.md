@@ -21,10 +21,10 @@ extensively in the organization, and at Orn Software in 2022 (in C#).
 This project is built with:
 
 - IntelliJ IDEA 2022.3.3 (Ultimate Edition)
-- Java 19 Oracle
+- Java 20 Oracle
 - Kotlin 1.8.0
 - JUnit 5.9.2
-- Gradle 7.6
+- Gradle 8.0.2
 - RabbitMQ amqp driver 5.16.0
 - Jackson JSON 2.14.2
 
