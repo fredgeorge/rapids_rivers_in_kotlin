@@ -20,14 +20,14 @@ repositories {
 
 dependencies {
     // Align versions of all Kotlin components
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.20-RC"))
 
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20-RC")
 
     // Jupiter using JUnit 5
-    testImplementation(platform("org.junit:junit-bom:5.9.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation(platform("org.junit:junit-bom:5.10.0-M1"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0-M1")
 
     // Need Jackson for JSON support
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.14.2")
