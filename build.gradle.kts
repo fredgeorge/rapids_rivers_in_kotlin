@@ -14,5 +14,5 @@ repositories {
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    kotlin("jvm") version "1.8.22"
+    kotlin("jvm") version "1.9.0"
 }

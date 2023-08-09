@@ -26,8 +26,8 @@ dependencies {
     implementation(project(":river"))
 
     // Align versions of all Kotlin components
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.20-RC"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.0"))
 
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20-RC")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
 }
