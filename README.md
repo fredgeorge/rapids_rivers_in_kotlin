@@ -22,11 +22,11 @@ This project is built with:
 
 - IntelliJ IDEA 2023.2 (Ultimate Edition)
 - Java 17.0.7 Oracle
-- Kotlin 1.9.0
-- JUnit 5.10.0
-- Gradle 8.2.1
+- Kotlin 1.9.22
+- JUnit 5.10.1
+- Gradle 8.5
 - RabbitMQ amqp driver 5.18.0
-- Jackson JSON 2.15.2
+- Jackson JSON 2.16.1
 
 So open up the project, and let the dependencies resolve themselves. 
 You can execute the tests to ensure everything is working correctly
