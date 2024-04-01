@@ -20,17 +20,17 @@ repositories {
 
 dependencies {
     // Align versions of all Kotlin components
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.22"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.23"))
 
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
 
     // Jupiter using JUnit 5
-    testImplementation(platform("org.junit:junit-bom:5.10.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+    testImplementation(platform("org.junit:junit-bom:5.10.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 
     // Need Jackson for JSON support
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.16.1")
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.17.0")
 
     // RabbitMQ client
     implementation("com.rabbitmq:amqp-client:5.20.0")

@@ -20,13 +20,13 @@ extensively in the organization, and at Orn Software in 2022 (in C#).
 
 This project is built with:
 
-- IntelliJ IDEA 2023.2 (Ultimate Edition)
+- IntelliJ IDEA 2023.3.6 (Ultimate Edition)
 - Java 17.0.7 Oracle
-- Kotlin 1.9.22
-- JUnit 5.10.1
-- Gradle 8.5
+- Kotlin 1.9.23
+- JUnit 5.10.2
+- Gradle 8.7
 - RabbitMQ amqp driver 5.18.0
-- Jackson JSON 2.16.1
+- Jackson JSON 2.17.0
 
 So open up the project, and let the dependencies resolve themselves. 
 You can execute the tests to ensure everything is working correctly
